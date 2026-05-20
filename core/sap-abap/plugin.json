@@ -20,5 +20,5 @@
     "sap-abap",
     "sql"
   ],
-  "category": "abap"
+  "category": "core"
 }

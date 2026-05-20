@@ -19,7 +19,7 @@
     "sap-datasphere",
     "visualization"
   ],
-  "category": "data-analytics",
+  "category": "data",
   "agents": [
     "./agents/datasphere-integration-advisor.md",
     "./agents/datasphere-admin-helper.md",
