@@ -1,0 +1,29 @@
+{
+  "name": "sap-mcp-tools",
+  "version": "1.0.0",
+  "description": "Guia experta de las 196 tools MCP de @mcp-abap-adt/core para operar SAP S/4HANA via ADT. Workflows de deploy, profiling, unit testing, transports, syntax check, y troubleshooting.",
+  "keywords": [
+    "mcp", "adt", "tools", "deploy", "activate", "create", "update", "delete",
+    "read class", "read program", "read view", "read table", "read domain", "read data element",
+    "create class", "create program", "create view", "create table",
+    "update class", "update program", "update view",
+    "search object", "where used", "syntax check", "semantic analysis",
+    "transport", "transport request", "lock", "unlock",
+    "unit test", "aunit", "cds test", "test run",
+    "profiling", "profiler", "trace", "performance", "runtime",
+    "dump", "st22", "runtime error",
+    "activate", "activation", "check syntax",
+    "service binding", "service definition", "publish",
+    "behavior definition", "bdef", "behavior implementation",
+    "metadata extension", "ddlx", "annotation",
+    "function module", "function group", "rfc",
+    "enhancement", "badi", "enhancement spot",
+    "package", "devc", "structure package",
+    "include", "program include",
+    "object type", "object list",
+    "exposition", "readonly", "high-level",
+    "mcp bridge", "mcp server", "mcp config",
+    "deploy order", "activation order",
+    "save operation error", "lock error"
+  ]
+}

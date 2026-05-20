@@ -1,0 +1,39 @@
+PurchaseOrder:
+  tcodes:
+    - ME21N
+    - ME22N
+    - ME23N
+  tables:
+    - EKKO
+    - EKPO
+    - EKET
+    - EKKN
+  bapis:
+    - BAPI_PO_CREATE1
+    - BAPI_PO_CHANGE
+  fiori_apps:
+    - Manage Purchase Orders
+  related_processes:
+    - GoodsReceipt
+    - InvoiceVerification
+
+GoodsReceipt:
+  tcodes:
+    - MIGO
+  tables:
+    - MKPF
+    - MSEG
+    - MATDOC
+  related_modules:
+    - SAP FI
+    - SAP WM
+    - SAP EWM
+
+InvoiceVerification:
+  tcodes:
+    - MIRO
+  tables:
+    - RBKP
+    - RSEG
+  related_modules:
+    - SAP FI

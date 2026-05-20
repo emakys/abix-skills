@@ -1,0 +1,34 @@
+{
+  "name": "sap-clean-core",
+  "description": "Clean Core strategy, A-B-C-D extensibility model, ABAP Cloud development, released APIs, classic APIs, cloudification repository, ATC readiness checks, object classification, upgrade safety, and code transformation for S/4HANA.",
+  "version": "1.0.0",
+  "author": {
+    "name": "FlowCore",
+    "email": "dev@flowcore.io"
+  },
+  "license": "proprietary",
+  "repository": "",
+  "keywords": [
+    "clean core",
+    "abap cloud",
+    "released api",
+    "classic api",
+    "cloudification",
+    "extensibility",
+    "atc",
+    "cloud readiness",
+    "s4hana readiness",
+    "upgrade",
+    "nivel a",
+    "nivel b",
+    "nivel c",
+    "nivel d",
+    "noapi",
+    "wrapper",
+    "sycm",
+    "simplification database",
+    "object classification",
+    "abap test cockpit"
+  ],
+  "category": "core"
+}
