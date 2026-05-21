@@ -340,7 +340,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "start",
+      "plan": "personal",
       "path": "tooling/sap-clean-core",
       "color": "#22d3ee"
     },
@@ -351,7 +351,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "start",
+      "plan": "personal",
       "path": "tooling/sap-api-style",
       "color": "#ef4444"
     },
@@ -373,7 +373,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "start",
+      "plan": "personal",
       "path": "tooling/sap-mcp-tools",
       "color": "#E8730C"
     },
