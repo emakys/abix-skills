@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated": "2026-05-20T00:00:00Z",
+  "version": "1.1.0",
+  "updated": "2026-05-21T00:00:00Z",
   "repo": "abix-skills",
   "skills": [
     {
@@ -10,7 +10,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-abap",
       "color": "#E8730C"
     },
@@ -21,7 +21,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-abap-cds",
       "color": "#f59e0b"
     },
@@ -32,7 +32,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-sqlscript",
       "color": "#10b981"
     },
@@ -43,7 +43,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-cap-capire",
       "color": "#8b5cf6"
     },
@@ -54,7 +54,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "recommended",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-ai-core",
       "color": "#ec4899"
     },
@@ -65,7 +65,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "recommended",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-cloud-sdk-ai",
       "color": "#818cf8"
     },
@@ -76,7 +76,7 @@
       "version": "1.0.0",
       "category": "core",
       "tier": "specialized",
-      "plan": "all",
+      "plan": "start",
       "path": "core/sap-hana-ml",
       "color": "#f472b6"
     },
@@ -87,7 +87,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-best-practices",
       "color": "#0ea5e9"
     },
@@ -98,7 +98,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-connectivity",
       "color": "#06b6d4"
     },
@@ -109,7 +109,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-cloud-platform",
       "color": "#38bdf8"
     },
@@ -120,7 +120,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-developer-guide",
       "color": "#7dd3fc"
     },
@@ -131,7 +131,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-integration-suite",
       "color": "#2dd4bf"
     },
@@ -142,7 +142,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-job-scheduling",
       "color": "#34d399"
     },
@@ -153,7 +153,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-cloud-logging",
       "color": "#a78bfa"
     },
@@ -164,7 +164,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-cloud-transport-management",
       "color": "#c084fc"
     },
@@ -175,7 +175,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "recommended",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-service-manager",
       "color": "#67e8f9"
     },
@@ -186,7 +186,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "specialized",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-cias",
       "color": "#fbbf24"
     },
@@ -197,7 +197,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "specialized",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-build-work-zone-advanced",
       "color": "#fb923c"
     },
@@ -208,7 +208,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "specialized",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-business-application-studio",
       "color": "#f97316"
     },
@@ -219,7 +219,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "specialized",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-intelligent-situation-automation",
       "color": "#e879f9"
     },
@@ -230,7 +230,7 @@
       "version": "1.0.0",
       "category": "btp",
       "tier": "specialized",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "btp/sap-btp-master-data-integration",
       "color": "#d946ef"
     },
@@ -285,7 +285,7 @@
       "version": "1.0.0",
       "category": "data",
       "tier": "recommended",
-      "plan": "professional",
+      "plan": "personal",
       "path": "data/sap-datasphere",
       "color": "#8b5cf6"
     },
@@ -296,7 +296,7 @@
       "version": "1.0.0",
       "category": "data",
       "tier": "specialized",
-      "plan": "professional",
+      "plan": "personal",
       "path": "data/sap-hana-cloud-data-intelligence",
       "color": "#c084fc"
     },
@@ -307,7 +307,7 @@
       "version": "1.0.0",
       "category": "data",
       "tier": "specialized",
-      "plan": "professional",
+      "plan": "personal",
       "path": "data/sap-sac-custom-widget",
       "color": "#e879f9"
     },
@@ -318,7 +318,7 @@
       "version": "1.0.0",
       "category": "data",
       "tier": "specialized",
-      "plan": "professional",
+      "plan": "personal",
       "path": "data/sap-sac-planning",
       "color": "#f0abfc"
     },
@@ -329,7 +329,7 @@
       "version": "1.0.0",
       "category": "data",
       "tier": "specialized",
-      "plan": "professional",
+      "plan": "personal",
       "path": "data/sap-sac-scripting",
       "color": "#d8b4fe"
     },
@@ -340,7 +340,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "tooling/sap-clean-core",
       "color": "#22d3ee"
     },
@@ -351,7 +351,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "tooling/sap-api-style",
       "color": "#ef4444"
     },
@@ -373,7 +373,7 @@
       "version": "1.0.0",
       "category": "tooling",
       "tier": "essential",
-      "plan": "all",
+      "plan": "start",
       "path": "tooling/sap-mcp-tools",
       "color": "#E8730C"
     },
@@ -384,7 +384,7 @@
       "version": "1.0.0",
       "category": "functional",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "functional/sap-fi-accounting",
       "color": "#10b981"
     },
@@ -395,7 +395,7 @@
       "version": "1.0.0",
       "category": "functional",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "functional/sap-mm-procurement",
       "color": "#f59e0b"
     },
@@ -406,7 +406,7 @@
       "version": "1.0.0",
       "category": "functional",
       "tier": "essential",
-      "plan": "personal",
+      "plan": "personal+",
       "path": "functional/sap-sd-sales",
       "color": "#3b82f6"
     }
