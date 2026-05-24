@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "updated": "2026-05-21T00:00:00Z",
+  "version": "1.2.0",
+  "updated": "2026-05-24T00:00:00Z",
   "repo": "abix-skills",
   "skills": [
     {
@@ -409,6 +409,83 @@
       "plan": "personal+",
       "path": "functional/sap-sd-sales",
       "color": "#3b82f6"
+    },
+    {
+      "id": "sap-co-controlling",
+      "name": "sap-co-controlling",
+      "description": "Consultor funcional SAP CO senior — Controlling. Cost Centers, Profit Centers, Internal Orders, CO-PA, Product Costing, Settlement.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "essential",
+      "plan": "personal+",
+      "path": "functional/sap-co-controlling",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "sap-pp-production",
+      "name": "sap-pp-production",
+      "description": "Consultor funcional SAP PP senior — Production Planning. MRP, Production Orders, BOM, Routing, Shop Floor, Confirmations.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "essential",
+      "plan": "personal+",
+      "path": "functional/sap-pp-production",
+      "color": "#ef4444"
+    },
+    {
+      "id": "sap-qm-quality",
+      "name": "sap-qm-quality",
+      "description": "Consultor funcional SAP QM senior — Quality Management. Inspection Planning, Lots, Results, Usage Decision, Notifications, Certificates.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "recommended",
+      "plan": "personal+",
+      "path": "functional/sap-qm-quality",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "sap-ps-projects",
+      "name": "sap-ps-projects",
+      "description": "Consultor funcional SAP PS senior — Project System. WBS, Networks, Budgeting, Revenue Recognition, Settlement, Progress Analysis.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "recommended",
+      "plan": "personal+",
+      "path": "functional/sap-ps-projects",
+      "color": "#d946ef"
+    },
+    {
+      "id": "sap-pm-maintenance",
+      "name": "sap-pm-maintenance",
+      "description": "Consultor funcional SAP PM senior — Plant Maintenance. Equipment, Functional Locations, Plans, Orders, Notifications, Preventive/Corrective.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "recommended",
+      "plan": "personal+",
+      "path": "functional/sap-pm-maintenance",
+      "color": "#ea580c"
+    },
+    {
+      "id": "sap-hcm-hr",
+      "name": "sap-hcm-hr",
+      "description": "Consultor funcional SAP HCM senior — Human Capital Management. PA, OM, Time, Payroll, Benefits, ESS/MSS, SuccessFactors.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "recommended",
+      "plan": "personal+",
+      "path": "functional/sap-hcm-hr",
+      "color": "#0ea5e9"
+    },
+    {
+      "id": "sap-ewm-warehouse",
+      "name": "sap-ewm-warehouse",
+      "description": "Consultor funcional SAP EWM senior — Extended Warehouse Management. Inbound/Outbound, Wave, Pick/Pack, Putaway, RF, Yard, Cross-Docking.",
+      "version": "1.0.0",
+      "category": "functional",
+      "tier": "specialized",
+      "plan": "personal+",
+      "path": "functional/sap-ewm-warehouse",
+      "color": "#14b8a6"
     }
   ]
 }
