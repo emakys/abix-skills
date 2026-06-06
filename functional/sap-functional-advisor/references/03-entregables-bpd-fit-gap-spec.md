@@ -3,6 +3,31 @@
 El Advisor produce uno de estos según lo que se levantó. Mantén las plantillas cortas y
 accionables. Son entregables **funcionales**: describen el QUÉ de negocio, no el CÓMO técnico.
 
+## Pseudo-diagramas (cuándo y cómo)
+
+Todo entregable es Markdown, así que un diagrama es solo un bloque **Mermaid** dentro del `.md`.
+Propón uno cuando aclare más que la prosa; no llenes de diagramas lo que una lista resuelve.
+Casos donde casi siempre vale la pena:
+
+- **Flujo de proceso** (AS-IS o TO-BE) → `flowchart`. El TO-BE rotula cada paso con su
+  transacción / app Fiori.
+- **Integración cross-módulo** (un requerimiento que cruza FI/CO/MM/SD…) → `flowchart` con un
+  subgraph por módulo, o `sequenceDiagram` si importa el orden temporal.
+- **Comportamiento de un gap** (en la FS) → `sequenceDiagram` (actor → sistema → resultado) o
+  `flowchart` con las ramas de decisión.
+
+Reglas: rótulos en lenguaje de negocio (no nombres técnicos de tabla), un diagrama por idea, y
+toda decisión que esté en el diagrama debe estar también en el texto (el diagrama acompaña, no
+reemplaza). Ejemplo mínimo de flujo TO-BE:
+
+```mermaid
+flowchart LR
+  A[Solicitud de compra] -->|ME51N| B[Liberación]
+  B -->|Estrategia de liberación| C[Pedido de compra]
+  C -->|MIGO| D[Entrada de mercancías]
+  D -->|MIRO| E[Verificación de factura]
+```
+
 ## 1. BPD — Business Process Document
 
 ```
@@ -19,6 +44,15 @@ Módulo: {FI|CO|MM|SD|PP|QM|PS|PM|HCM|EWM}  ·  Fase: Explore  ·  Fecha: {fecha
 ## Flujo TO-BE (en SAP estándar)
 1. {paso} — transacción/app Fiori — config asociada
 2. ...
+
+## Diagrama del flujo TO-BE
+```mermaid
+flowchart LR
+  A[{disparador}] -->|{trans/app}| B[{paso}]
+  B -->|{trans/app}| C[{paso}]
+```
+{Incluye el diagrama solo si el flujo tiene 3+ pasos o ramas. Para procesos lineales cortos, la
+lista basta.}
 
 ## Reglas de negocio
 - {regla}
@@ -58,6 +92,18 @@ Módulo(s): {...}  ·  Fecha: {fecha}
 
 ## Comportamiento funcional esperado
 {descripción funcional precisa: entradas, reglas, salidas, criterios de aceptación}
+
+## Diagrama del comportamiento
+```mermaid
+sequenceDiagram
+  actor U as {usuario/rol}
+  participant S as SAP
+  U->>S: {acción / entrada}
+  S->>S: {regla / validación}
+  S-->>U: {resultado / salida}
+```
+{Usa `sequenceDiagram` cuando importe el orden actor→sistema→resultado, o `flowchart` si hay
+ramas de decisión. Inclúyelo cuando el comportamiento no sea trivial.}
 
 ## Datos involucrados
 - Maestros y transaccionales relevantes

@@ -1,13 +1,13 @@
 {
-  "version": "1.3.0",
-  "updated": "2026-06-05T00:00:00Z",
+  "version": "1.3.1",
+  "updated": "2026-06-06T00:00:00Z",
   "repo": "abix-skills",
   "skills": [
     {
       "id": "sap-functional-advisor",
       "name": "sap-functional-advisor",
-      "description": "Orquestador funcional SAP. Dirige las 10 super skills de módulo (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM), defiende Clean Core, conduce la fase Explore de SAP Activate y entrega artefactos funcionales (BPD, Fit-Gap, especificación).",
-      "version": "1.3.0",
+      "description": "Orquestador funcional SAP. Dirige las 10 super skills de módulo (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM), defiende Clean Core, conduce la fase Explore de SAP Activate, propone pseudo-diagramas (Mermaid) cuando aclaran y entrega artefactos funcionales (BPD, Fit-Gap, especificación).",
+      "version": "1.4.0",
       "category": "functional",
       "tier": "essential",
       "plan": "personal+",

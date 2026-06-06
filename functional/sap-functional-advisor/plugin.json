@@ -1,7 +1,7 @@
 {
   "name": "sap-functional-advisor",
-  "version": "1.3.0",
-  "description": "Orquestador de las 10 super skills funcionales (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM). Defiende Clean Core, conduce la fase Explore de SAP Activate como recorrido guiado, explora el sistema SAP en vivo por MCP ADT (solo lectura) para fundamentar el fit-gap, y entrega artefactos funcionales (BPD, Fit-Gap, especificacion funcional).",
+  "version": "1.4.0",
+  "description": "Orquestador de las 10 super skills funcionales (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM). Defiende Clean Core, conduce la fase Explore de SAP Activate como recorrido guiado, explora el sistema SAP en vivo por MCP ADT (solo lectura) para fundamentar el fit-gap, propone pseudo-diagramas (Mermaid) cuando aclaran, y entrega artefactos funcionales (BPD, Fit-Gap, especificacion funcional).",
   "keywords": [
     "funcional", "consultor", "asesor", "advisor", "requerimiento", "requerimientos",
     "levantamiento", "fit-gap", "fit gap", "fit to standard", "blueprint", "explore",
@@ -13,6 +13,8 @@
     "proyectos", "mantenimiento", "recursos humanos", "almacen", "warehouse",
     "aprobacion", "liberacion", "integracion", "cross-modulo",
     "mcp", "adt", "explorar sistema", "verificar en sap", "objeto z", "where-used",
-    "contenido de tabla", "datos maestros", "sistema en vivo"
+    "contenido de tabla", "datos maestros", "sistema en vivo",
+    "diagrama", "diagram", "pseudo-diagrama", "mermaid", "flujo", "flowchart",
+    "diagrama de flujo", "secuencia", "visualizar", "graficar", "dibujar proceso"
   ]
 }
