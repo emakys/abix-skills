@@ -3,6 +3,52 @@
 El Advisor produce uno de estos según lo que se levantó. Mantén las plantillas cortas y
 accionables. Son entregables **funcionales**: describen el QUÉ de negocio, no el CÓMO técnico.
 
+## Documento de salida — canónico, único y vivo
+
+En el modo Functional el resultado del análisis es **un solo documento consolidado**:
+
+```
+src/{workspace}/especificacion-funcional.md
+```
+
+Reglas de manejo del documento:
+
+- **Único y consolidado.** No generes archivos sueltos por artefacto. Todo vive en ese `.md`,
+  en este orden: Contexto/Alcance → BPD (AS-IS/TO-BE) → Matriz Fit-Gap → Especificación
+  funcional de cada gap → Decisiones, supuestos y `[PENDIENTE]`. Las plantillas de abajo son las
+  **secciones** de este documento, no archivos separados.
+- **Vivo.** Créalo con `Write` la primera vez que haya algo que registrar y **actualízalo con
+  `Edit` cada vez que se cierre una decisión** — no esperes al final de la sesión. El consultor
+  debe poder abrir el `.md` en cualquier momento y ver el estado actual.
+- **Funcional, no técnico.** Es la Especificación Funcional (EF): el QUÉ. Para los gaps que
+  requieran desarrollo, déjalos documentados como hallazgo y cierra apuntando a ejecutar
+  `/analisis` después, que es quien produce la especificación técnica (`fuente-de-verdad.md`).
+  La cadena es: **EF (modo Functional) → ET técnica (`/analisis`) → construcción (`/pipeline`)**.
+
+Esqueleto del documento:
+
+```
+# Especificación Funcional — {tema}
+Workspace: {ws}  ·  Módulo(s): {...}  ·  Fase: Explore  ·  Fecha: {fecha}
+
+## 1. Contexto y alcance
+{qué se está levantando y para quién; qué queda fuera}
+
+## 2. BPD — Business Process Document
+{ver plantilla 1}
+
+## 3. Matriz Fit-Gap
+{ver plantilla 2}
+
+## 4. Especificación funcional de los gaps
+{una sección FS por cada gap — ver plantilla 3}
+
+## 5. Decisiones, supuestos y pendientes
+- Decisiones tomadas: {...}
+- Supuestos: {...}
+- [PENDIENTE]: {lo no resuelto}
+```
+
 ## Pseudo-diagramas (cuándo y cómo)
 
 Todo entregable es Markdown, así que un diagrama es solo un bloque **Mermaid** dentro del `.md`.
