@@ -1,14 +1,15 @@
 {
   "name": "sap-functional-advisor",
   "version": "1.5.0",
-  "description": "Orquestador de las 10 super skills funcionales (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM). Defiende Clean Core, conduce la fase Explore de SAP Activate como recorrido guiado, explora el sistema SAP en vivo por MCP ADT (solo lectura) para fundamentar el fit-gap, propone pseudo-diagramas (Mermaid) cuando aclaran, y consolida el analisis en un documento vivo unico (especificacion-funcional.md) con BPD, Fit-Gap y especificacion funcional.",
+  "description": "Orquestador de las 12 super skills funcionales (FI, CO, MM, SD, PP, QM, PS, PM, HCM, EWM, JVA, RE-FX). Defiende Clean Core, conduce la fase Explore de SAP Activate como recorrido guiado, explora el sistema SAP en vivo por MCP ADT (solo lectura) para fundamentar el fit-gap, propone pseudo-diagramas (Mermaid) cuando aclaran, y consolida el analisis en un documento vivo unico (especificacion-funcional.md) con BPD, Fit-Gap y especificacion funcional.",
   "keywords": [
     "funcional", "consultor", "asesor", "advisor", "requerimiento", "requerimientos",
     "levantamiento", "fit-gap", "fit gap", "fit to standard", "blueprint", "explore",
     "activate", "metodologia", "recorrido", "proceso", "proceso de negocio",
     "customizing", "configuracion", "spro", "img", "estandar", "clean core",
     "especificacion funcional", "spec funcional", "BPD", "disposicion de gap",
-    "FI", "CO", "MM", "SD", "PP", "QM", "PS", "PM", "HCM", "EWM",
+    "FI", "CO", "MM", "SD", "PP", "QM", "PS", "PM", "HCM", "EWM", "JVA", "RE-FX",
+    "joint venture", "real estate", "inmuebles", "arrendamiento",
     "finanzas", "controlling", "compras", "ventas", "produccion", "calidad",
     "proyectos", "mantenimiento", "recursos humanos", "almacen", "warehouse",
     "aprobacion", "liberacion", "integracion", "cross-modulo",

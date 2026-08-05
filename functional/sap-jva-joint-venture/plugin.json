@@ -1,0 +1,43 @@
+{
+  "name": "sap-jva-joint-venture",
+  "description": "SAP JVA Joint Venture Accounting — Super Skill funcional + tecnico. Venture, Equity Group, Recovery Indicator, Cutback, Joint Interest Billing (JIB), Cash Calls, Overhead Recovery, AFE, Non-Consent, Farm-in/Farm-out, Carried Interest. Modulo de industria Oil & Gas/Energy que se apoya sobre FI/CO. Integrado con FI (AR de partners), CO (objetos JV-relevantes), MM (compras JV-relevantes), PS (WBS/AFE), SD (offtake compartido). Optimizado para S/4HANA 2023 (ACDOCA, Universal Journal, JVA embebido).",
+  "version": "1.0.0",
+  "category": "functional",
+  "keywords": [
+    "joint venture accounting", "jva", "joint venture", "venture", "joint venture partner",
+    "equity group", "grupo de equity", "working interest", "participating interest", "wi", "pi",
+    "recovery indicator", "ri", "indicador de recuperacion",
+    "cutback", "cutback group", "cutback processing", "GJ04",
+    "joint interest billing", "jib", "billing partner", "GJ08",
+    "cash call", "cash calls", "solicitud de fondos",
+    "overhead recovery", "recuperacion overhead", "recargo gastos generales",
+    "afe", "authorization for expenditure", "autorizacion de gasto",
+    "non-operated", "non-operator", "no operador", "operador jv",
+    "operator", "operador",
+    "non-consent", "no consentimiento",
+    "farm-in", "farm-out", "farm in", "farm out",
+    "carried interest", "carrying party", "carried party",
+    "oil and gas", "oil & gas", "upstream", "midstream", "energy industry",
+    "joint operating agreement", "joa",
+    "partner statement", "statement to partner", "extracto de socio",
+    "partner audit", "auditoria de socio",
+    "T8J1", "T8J2", "T8J3", "T8J2P",
+    "GJUBI", "GJHIST",
+    "is-oil", "industry solution oil gas",
+    "well", "pozo", "exploration and production", "e&p",
+    "gas balancing", "produccion compartida",
+    "production sharing agreement", "psa",
+    "hydrocarbon accounting", "contabilidad de hidrocarburos",
+    "jv relevant", "jv-relevante", "atributo jv",
+    "venture master data", "maestro de venture",
+    "equity percentage", "porcentaje de participacion",
+    "cutback run", "corrida de cutback",
+    "billing statement", "estado de cuenta jv",
+    "joint venture cost sharing", "reparto de costes"
+  ],
+  "author": {
+    "name": "ABIX Studio",
+    "email": "skills@abix.dev"
+  },
+  "license": "MIT"
+}

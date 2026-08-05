@@ -1,11 +1,11 @@
-# Mapa de orquestación — las 10 super skills funcionales
+# Mapa de orquestación — las 12 super skills funcionales
 
 El Advisor **no sabe de módulos: dirige a quien sabe.** No reproduzcas el conocimiento de
 estas skills; el motor de ABIX las inyecta por match de keyword junto al Advisor. Tu trabajo
 es reconocer el módulo (o la combinación), dejar que la super skill aporte la profundidad, y
 tejer una respuesta única que además aplique metodología, defensa de Clean Core y handoff.
 
-## Las 10 super skills (id → cuándo enrutar)
+## Las 12 super skills (id → cuándo enrutar)
 
 | Skill id | Módulo | Enruta cuando el tema es… |
 |---|---|---|
@@ -19,6 +19,8 @@ tejer una respuesta única que además aplique metodología, defensa de Clean Co
 | `sap-pm-maintenance` | PM | mantenimiento, equipos, ubicaciones técnicas, planes, avisos, órdenes, preventivo/correctivo |
 | `sap-hcm-hr` | HCM | recursos humanos, PA/OM, tiempos, nómina, beneficios, ESS/MSS, SuccessFactors |
 | `sap-ewm-warehouse` | EWM | almacén extendido, inbound/outbound, olas, picking/packing, ubicación, RF, yard, cross-docking |
+| `sap-jva-joint-venture` | JVA | joint venture, cutback, equity group, recovery indicator, JIB, cash call, non-operated, working interest, farm-in/farm-out |
+| `sap-re-fx-real-estate` | RE-FX | inmuebles, arrendamiento, contrato de alquiler, lessor, lessee, IFRS 16, gastos comunes, ajuste de renta, business entity, objeto de locación |
 
 Cuando el tema cruza módulos, reconoce **todos** los involucrados y nómbralos. El valor del
 Advisor es ver el bosque que cada super skill, sola, no ve.
@@ -42,6 +44,12 @@ Antes de cerrar cualquier requerimiento, verifica los efectos cruzados:
 - **PM → CO** — liquidación de la orden de mantenimiento.
 - **EWM ↔ MM/SD** — ejecuta los movimientos de inbound/outbound del almacén.
 - **HCM → FI/CO** — contabilización de nómina a FI/CO.
+- **JVA ↔ FI/CO** — todo posting JV-relevante lleva un Recovery Indicator que determina el cutback (reparto de costo entre partners).
+- **JVA → MM** — documentos de compra marcados JV-relevantes heredan el objeto CO y fluyen al cutback.
+- **JVA → PS** — elementos WBS pueden ser objetos de coste JV (AFEs de perforación/desarrollo).
+- **RE-FX → FI** — contabilización periódica del alquiler (renta, gastos comunes) y liquidación de gastos comunes al inquilino.
+- **RE-FX → FI-AA** — el inmueble propio es activo fijo (lessor); el contrato lease-in genera un activo por derecho de uso IFRS 16.
+- **RE-FX → CO** — asignación de centro de costo/centro de beneficio por objeto de locación (Rental Object).
 
 Regla práctica: si un requerimiento toca importes, stock o costos, casi siempre hay un
 segundo módulo en juego. Decláralo y, si aplica, deja que su super skill aporte.
