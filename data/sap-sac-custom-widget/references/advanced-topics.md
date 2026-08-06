@@ -393,13 +393,15 @@ Upload resource files directly to SAC:
 
 Common libraries used with SAC widgets:
 
+For generated enterprise/offline packages, prefer local `vendor/` copies of these libraries. Treat the CDN URLs below as general reference examples, not defaults for `/widget-generate` output.
+
 | Library | Use Case | CDN |
 |---------|----------|-----|
-| ECharts | Charts | `[https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js`](https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js`) |
-| D3.js | Data viz | `[https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js`](https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js`) |
-| Chart.js | Charts | `[https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js`](https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js`) |
-| Leaflet | Maps | `[https://unpkg.com/leaflet@1.9/dist/leaflet.js`](https://unpkg.com/leaflet@1.9/dist/leaflet.js`) |
-| Moment.js | Dates | `[https://cdn.jsdelivr.net/npm/moment@2/moment.min.js`](https://cdn.jsdelivr.net/npm/moment@2/moment.min.js`) |
+| ECharts | Charts | `https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js` |
+| D3.js | Data viz | `https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js` |
+| Chart.js | Charts | `https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js` |
+| Leaflet | Maps | `https://unpkg.com/leaflet@1.9/dist/leaflet.js` |
+| Moment.js | Dates | `https://cdn.jsdelivr.net/npm/moment@2/moment.min.js` |
 
 ### Integration Pattern
 
@@ -407,7 +409,7 @@ Common libraries used with SAC widgets:
 (function() {
   // Library URLs
   const LIBS = {
-    echarts: "[https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"](https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js")
+    echarts: "https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"
   };
 
   // Track loading state
@@ -647,6 +649,53 @@ _render() {
 
 ---
 
+## Export & Viewport Loading (2026-06-12)
+
+### PDF/PPTX/Google Slides Export
+
+To support export, set `"supportsExport": true` in the root object and implement `serializeCustomWidgetToImage()`:
+
+```javascript
+async serializeCustomWidgetToImage(exportOptions) {
+  const canvas = await html2canvas(this._shadowRoot.querySelector(".container"));
+  return canvas.toDataURL("image/png");
+}
+```
+
+The `exportOptions` object (from the Optimized Story Experience) provides `IExportOptions` with page size, paper size, and orientation. The method must return a Base64-encoded image string. The framework calls this method automatically when a user exports the story.
+
+**Prerequisite**: `supportsExport: true` in widget.json root object. Only available in Optimized Story Experience.
+
+### Viewport Loading
+
+When `supportsViewportLoading` is set to `true`, the widget is lazy-loaded when it scrolls into the visible viewport. To signal rendering completion (for performance measurement), fire the `customWidgetRenderComplete` custom event:
+
+```javascript
+onCustomWidgetAfterUpdate(changedProperties) {
+  this._render();
+  this.dispatchEvent(new Event("customWidgetRenderComplete"));
+}
+```
+
+**Prerequisite**: `supportsViewportLoading: true` in widget.json root object. Optimized Story Experience only.
+
+### Linked Analysis Filter on Selection
+
+When `supportsLinkedAnalysisFilterOnSelection` is set to `true`, the widget participates in linked analysis based on Filter on Data Point Selection. Data binding linked analysis APIs:
+
+```javascript
+const binding = this.dataBindings.getDataBinding("myDataBinding");
+const linkedAnalysis = binding.getLinkedAnalysis();
+
+linkedAnalysis.setFilters(selection);
+linkedAnalysis.removeFilters();
+const isEnabled = linkedAnalysis.isDataPointSelectionEnabled();
+```
+
+**Prerequisite**: `supportsLinkedAnalysisFilterOnSelection: true` in widget.json root object. Optimized Story Experience only.
+
+---
+
 ## Resources
 
 - [SAP Custom Widget Developer Guide (PDF)](https://help.sap.com/doc/c813a28922b54e50bd2a307b099787dc/release/en-US/CustomWidgetDevGuide_en.pdf)
@@ -655,4 +704,4 @@ _render() {
 
 ---
 
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-06-12

@@ -39,9 +39,9 @@ npm install @sap-ai-sdk/prompt-registry
 ```json
 {
   "dependencies": {
-    "@sap-ai-sdk/ai-api": "~2.2.0",
-    "@sap-ai-sdk/document-grounding": "~2.2.0",
-    "@sap-ai-sdk/prompt-registry": "~2.2.0"
+    "@sap-ai-sdk/ai-api": "~2.11.0",
+    "@sap-ai-sdk/document-grounding": "~2.11.0",
+    "@sap-ai-sdk/prompt-registry": "~2.11.0"
   }
 }
 ```
@@ -201,7 +201,7 @@ const pipeline = await PipelinesApi.createPipeline(
   {
     type: 'MSSharePoint',
     configuration: {
-      siteUrl: '[https://company.sharepoint.com/sites/docs',](https://company.sharepoint.com/sites/docs',)
+      siteUrl: 'https://company.sharepoint.com/sites/docs',
       clientId: 'client-id',
       clientSecret: 'client-secret',
       tenantId: 'tenant-id'

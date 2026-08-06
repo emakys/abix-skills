@@ -4,20 +4,30 @@ description: |
   Integrates SAP Cloud SDK for AI into JavaScript/TypeScript and Java applications. Use when building applications with SAP AI Core, Generative AI Hub, or Orchestration Service. Covers chat completion, embedding, streaming, function calling, content filtering, data masking, document grounding, prompt registry, and LangChain/Spring AI integration. Supports OpenAI GPT-4o, Llama, Gemini, Amazon Nova, and other foundation models via SAP BTP.
 license: GPL-3.0
 metadata:
-  version: 2.0.1
-  last_verified: 2026-02-25
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
+  last_verified: "2026-06-15"
+  package_evidence: "docs/project/package-evidence/2026-06-15.json"
 ---
 
 # SAP Cloud SDK for AI
 
-The official SDK for SAP AI Core, SAP Generative AI Hub, and Orchestration Service.
+## Related Skills
+
+- **sap-cap-capire**: Use for building CAP applications that consume AI services, including event handler patterns and async LLM orchestration
+- **sap-ai-core**: Use for AI Core platform setup, orchestration configuration, and model deployment
+- **sap-dependency-security**: Hardening guidance for npm package upgrades, lockfile policies, and secure dependency workflows
+
+The official SDK for SAP AI Core, SAP Generative AI Hub, and Orchestration Service. Package versions are verified against public registries; AI Core tenant execution and exact model availability still require target-tenant validation.
 
 ## When to Use This Skill
 
 Use this skill when:
 - Integrating AI/LLM capabilities into SAP BTP applications
 - Building chat completion or embedding features
-- Using GPT-4o, Claude, Gemini, or other models via SAP AI Core
+- Using tenant-approved OpenAI, Claude, Gemini, Amazon, Mistral, or other model families via SAP AI Core
 - Implementing content filtering, data masking, or document grounding
 - Creating agentic workflows with LangChain or Spring AI
 - Managing prompts via Prompt Registry
@@ -34,7 +44,7 @@ Use this skill when:
 
 ## Quick Start
 
-> **Note**: This skill uses SAP Cloud SDK for AI v2.2.0+. If you're migrating from v1.x, see [V1 to V2 Migration Guide](references/v1-to-v2-migration.md) for breaking changes.
+> **Note**: This skill uses SAP Cloud SDK for AI JavaScript v2.11.0+ and Java v1.19.0+ based on public package registry evidence from 2026-06-15. If you're migrating from v1.x, see [V1 to V2 Migration Guide](references/v1-to-v2-migration.md) for breaking changes.
 
 ### JavaScript/TypeScript
 
@@ -128,12 +138,14 @@ For detailed connection options, see `references/connecting-to-ai-core.md`
 
 ## Supported Models
 
-### Recommended
-- **OpenAI**: gpt-4o, gpt-4o-mini, o1, o3-mini
-- **Anthropic (AWS)**: Claude 3.5 Sonnet, Claude 4
-- **Amazon**: Nova Pro, Nova Lite, Nova Micro
-- **Google**: Gemini 2.5 Flash, Gemini 2.0 Flash
-- **Mistral**: Medium, Large
+Model IDs and versions are tenant-specific. Before copying an example into application code, list the target catalog through SAP AI Launchpad Model Library or the AI Core model-list API.
+
+### Example Families
+- **OpenAI**: GPT-family chat, multimodal, reasoning, and embedding models where entitled
+- **Anthropic (AWS)**: Claude-family models where entitled
+- **Amazon**: Nova/Titan-family models where entitled
+- **Google**: Gemini-family models where entitled
+- **Mistral**: Mistral-family models where entitled
 
 ### Deprecated Models (Use Replacements)
 | Deprecated | Use Instead |
@@ -231,6 +243,63 @@ const client = new OrchestrationClient({
 });
 ```
 
+### CAP Integration
+
+The SDK integrates natively with CAP event handlers. Use `OrchestrationClient` inside CAP service classes to add AI capabilities to your CAP services.
+
+**Service binding in MTA**:
+```yaml
+resources:
+  - name: my-ai-core
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: extended
+```
+
+**CAP event handler with AI**:
+```js
+import { OrchestrationClient } from '@sap-ai-sdk/orchestration';
+import cds from '@sap/cds';
+
+export default class AnalysisService extends cds.ApplicationService {
+  async init() {
+    const client = new OrchestrationClient({
+      promptTemplating: {
+        model: { name: 'gpt-4o' },
+        prompt: [
+          { role: 'system', content: 'Analyze and categorize as JSON.' },
+          { role: 'user', content: '{{?input}}' }
+        ]
+      }
+    });
+
+    this.on('analyzeText', async (req) => {
+      const response = await client.chatCompletion({
+        placeholderValues: { input: req.data.text }
+      });
+      return response.getContent();
+    });
+
+    return super.init();
+  }
+}
+```
+
+**Critical: Use async processing for production LLM calls.** LLM responses can take 30-60 seconds, exceeding BTP load balancer timeouts. Return `202 Accepted` and process in the background:
+
+```js
+this.on('analyzeText', async (req) => {
+  const entry = await INSERT.into('Results').entries({
+    text: req.data.text, status: 'processing'
+  });
+  cds.spawn(() => processLLM(entry.id, req.data.text, client));
+  return req.reply(202, { id: entry.id, status: 'processing' });
+});
+```
+
+For the complete CAP + AI integration guide including HANA Vector types for RAG and prompt externalization, see the **sap-cap-capire** skill.
+
 ## Response Helpers
 
 JavaScript SDK provides helper methods:
@@ -287,8 +356,10 @@ For detailed guidance:
 
 | SDK | Current Version | Node/Java Requirement |
 |-----|-----------------|----------------------|
-| JavaScript | 2.2.0+ | Node.js 20+ |
-| Java | 1.13.0 (Core) / 1.12.0 (Latest orchestration) | Java 17+ (21 LTS recommended) |
+| JavaScript | 2.11.0+ | Node.js 20+ |
+| Java | 1.19.0+ | Java 17+ (21 LTS recommended) |
+
+Version evidence: `docs/project/package-evidence/2026-06-15.json`. This is package-registry evidence only, not live AI Core runtime evidence.
 
 **Note**: Generated model classes (in `...model` packages) may change in minor releases but are safe to use.
 

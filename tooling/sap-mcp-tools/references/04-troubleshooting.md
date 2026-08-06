@@ -58,7 +58,7 @@
 **Causa:** El source code tiene error de sintaxis ABAP/CDS.
 
 **Solucion:**
-- Usar `Check*` (CheckClass, CheckView, etc.) ANTES de Activate
+- Usar `Check*` (CheckClass, CheckDdl, etc.) ANTES de Activate
 - Corregir el source y hacer Update de nuevo
 - `GetAbapSemanticAnalysis` da detalles mas ricos del error
 

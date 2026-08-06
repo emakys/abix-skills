@@ -24,12 +24,12 @@
 ```
 1. SearchObject(query="ZI_MATERIAL", object_type="DDLS")
 
-2. CreateView(view_name="ZI_MATERIAL", package="ZDEV", transport_request="S4DK900123",
+2. CreateDdl(ddl_name="ZI_MATERIAL", package="ZDEV", transport_request="S4DK900123",
               source="@AbapCatalog.viewEnhancementCategory: [#NONE]\ndefine view entity ZI_Material...")
 
-3. CheckView(view_name="ZI_MATERIAL")
+3. CheckDdl(ddl_name="ZI_MATERIAL")
 
-4. ActivateView(view_name="ZI_MATERIAL")
+4. ActivateDdl(ddl_name="ZI_MATERIAL")
 ```
 
 ## Deploy RAP Completo (orden estricto)
@@ -44,8 +44,8 @@ Paso 1: Tablas base
   ActivateTable(table_name="ZMAT_DD")
 
 Paso 2: CDS Interface
-  CreateView(view_name="ZI_MATERIAL", source="define root view entity ZI_Material as select from zmat_d...")
-  ActivateView(view_name="ZI_MATERIAL")
+  CreateDdl(ddl_name="ZI_MATERIAL", source="define root view entity ZI_Material as select from zmat_d...")
+  ActivateDdl(ddl_name="ZI_MATERIAL")
 
 Paso 3: BDEF Interface
   CreateBehaviorDefinition(bdef_name="ZI_MATERIAL", source="managed implementation in class zcl_bp_i_material unique;...")
@@ -57,8 +57,8 @@ Paso 4: Behavior Pool (clase)
   ActivateClass(class_name="ZCL_BP_I_MATERIAL")
 
 Paso 5: CDS Consumption (projection)
-  CreateView(view_name="ZC_MATERIAL", source="define root view entity ZC_Material as projection on ZI_Material...")
-  ActivateView(view_name="ZC_MATERIAL")
+  CreateDdl(ddl_name="ZC_MATERIAL", source="define root view entity ZC_Material as projection on ZI_Material...")
+  ActivateDdl(ddl_name="ZC_MATERIAL")
 
 Paso 6: BDEF Consumption
   CreateBehaviorDefinition(bdef_name="ZC_MATERIAL", source="projection;...")

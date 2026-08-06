@@ -8,10 +8,13 @@ description: |
   Node.js and Java runtimes, event handlers, OData services, and CAP plugins.
 license: GPL-3.0
 metadata:
-  version: "2.1.2"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
   last_verified: "2026-02-22"
   cap_version: "@sap/cds 9.7.x"
-  mcp_version: "@cap-js/mcp-server 0.0.3+"
+  mcp_version: "@cap-js/mcp-server 0.0.5"
   lsp_version: "@sap/cds-lsp 9.7.x"
 ---
 
@@ -26,12 +29,29 @@ metadata:
 - **sap-abap**: Use for ABAP system integration, external service consumption, and SAP extensions
 - **sap-btp-best-practices**: Use for production deployment patterns and architectural guidance
 - **sap-ai-core**: Use when adding AI capabilities to CAP applications or integrating with SAP AI services
+- **sap-cloud-sdk-ai**: Use for SDK-level AI integration (chat completion, streaming, tool calling) in CAP event handlers
+- **sap-cloud-sdk-ai-python**: Use for Python-based AI integration with CAP Java or standalone BTP services
 - **sap-api-style**: Use when documenting CAP OData services or following API documentation standards
+- **sap-dependency-security**: Use for secure dependency, lockfile, supply-chain, and exact MCP server pin controls in CAP service repos
+
+## When to Use This Skill
+
+Use this skill when creating CAP projects, modeling CDS entities/services, implementing Node.js or Java event handlers, configuring HANA/SQLite/PostgreSQL persistence, deploying to BTP Cloud Foundry or Kyma, adding Fiori UIs, configuring authorization/multitenancy/messaging, or using CAP MCP/LSP tooling.
+
+## Common Issues
+
+| Issue | First check |
+|-------|-------------|
+| `cds watch` or `cds serve` fails | Verify `@sap/cds-dk`, Node.js version, and project `package.json` scripts. |
+| Entity/service not found | Use CAP MCP `search_model` when available, then inspect `db/` and `srv/` CDS files. |
+| HANA deployment fails | Check HDI service binding, `mta.yaml`, and the HANA deployment references. |
+| Authorization behaves unexpectedly | Review `@requires`, `@restrict`, XSUAA/IAS bindings, and user role mappings. |
 
 ## Table of Contents
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Core Concepts](#core-concepts)
+- [AI Integration](#ai-integration)
 - [Database Setup](#database-setup)
 - [Deployment](#deployment)
 - [Bundled Resources](#bundled-resources)
@@ -40,8 +60,12 @@ metadata:
 
 ### Project Initialization
 ```sh
-# Install CAP development kit
-npm i -g @sap/cds-dk @sap/cds-lsp
+# Use an approved CAP toolchain:
+# - project-local devDependencies
+# - user-local npm prefix
+# - enterprise-managed Node/CAP installation
+# Ensure cds and optional cds-lsp commands are on PATH.
+cds --version
 
 # Create new project
 cds init <project-name>
@@ -105,11 +129,22 @@ This skill integrates with the official CAP MCP (Model Context Protocol) server,
 - **Zero Configuration**: No credentials or environment variables required
 - **Offline-Capable**: All searches are local (model) or cached (docs)
 
-**Setup**: See [MCP Integration Guide](references/mcp-integration.md) for configuration with Claude Code, opencode, or GitHub Copilot.
+**Setup**: See [MCP Integration Guide](references/mcp-integration.md) for configuration with Claude Code, opencode, or GitHub Copilot. MCP package pins are governed by **sap-dependency-security** and validated by `npm run validate:mcp-security`.
 
-**Use Cases**: See [MCP Use Cases](references/mcp-use-cases.md) for real-world examples with quantified ROI (~$131K/developer/year time savings).
+**Use Cases**: See [MCP Use Cases](references/mcp-use-cases.md) for illustrative local workflow examples and planning assumptions, not repository-verified ROI.
 
 **Agent Integration**: The specialized agents (cap-cds-modeler, cap-service-developer, cap-project-architect, cap-performance-debugger) automatically use these MCP tools as part of their workflows.
+
+### CAP MCP and LSP Routing
+
+Use MCP first for local model and docs questions, then fall back to direct file search when MCP is unavailable. Use `rg -n "<entity|service|aspect|annotation|handler|cds compile|deployment>" references/*.md srv db app` to locate the narrowest reference before loading long CAP guides.
+
+- Use `references/mcp-integration.md` for MCP configuration and package pin checks.
+- Use `references/mcp-use-cases.md` only for workflow selection and illustrative impact examples.
+- Use `.lsp.json` as a Claude-compatible sidecar for CAP editor integration; other harnesses should not assume it is auto-loaded.
+- For Codex, OpenCode, editors, or other LSP-capable clients, configure the command manually as `node <sap-cap-capire-plugin-root>/lsp/cds-lsp-launcher.mjs --stdio`. This still requires `@sap/cds-lsp` to be installed through an approved project-local devDependency, user-local npm prefix, or enterprise-managed toolchain, with `cds-lsp` available on PATH.
+- Without LSP integration, use the Markdown guidance, bundled references, `rg`, and CAP CLI checks directly.
+- Mark live deployment, HANA, XSUAA, and multitenancy verification pending unless the target project or tenant evidence is available.
 
 ## Project Structure
 ```
@@ -185,6 +220,127 @@ await INSERT.into(Books)
 await UPDATE(Books, bookId)
   .set({ stock: { '-=': 1 } });
 ```
+
+## AI Integration
+
+CAP applications integrate with SAP AI Core via the SAP Cloud SDK for AI. The recommended pattern uses the Orchestration Service through CAP event handlers, with all credential management handled by BTP service bindings.
+
+### Service Binding (MTA)
+
+```yaml
+resources:
+  - name: my-ai-core
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: extended
+```
+
+### Local Development (Hybrid Mode)
+
+```bash
+cds bind -2 <AICORE_INSTANCE> && cds-tsx watch --profile hybrid
+```
+
+### Event Handler Pattern (Node.js/TypeScript)
+
+```js
+import { OrchestrationClient } from '@sap-ai-sdk/orchestration';
+
+module.exports = class AnalysisService extends cds.ApplicationService {
+  async init() {
+    const { Feedback } = this.entities;
+
+    this.on('analyzeFeedback', async (req) => {
+      const userText = req.data.text;
+
+      const client = new OrchestrationClient({
+        promptTemplating: {
+          model: { name: 'gpt-4o' },
+          prompt: [
+            { role: 'system', content: 'Categorize feedback as JSON: sentiment, category, urgency.' },
+            { role: 'user', content: '{{?userText}}' }
+          ]
+        }
+      });
+
+      const response = await client.chatCompletion({
+        placeholderValues: { userText }
+      });
+
+      const aiResult = response.getContent();
+
+      await INSERT.into('FeedbackResults').entries({
+        originalText: userText,
+        analysisJson: aiResult
+      });
+
+      return aiResult;
+    });
+
+    return super.init();
+  }
+};
+```
+
+### Asynchronous Processing (Production Pattern)
+
+LLM calls can take 30-60 seconds. Never process them synchronously in production — the BTP load balancer will timeout before the LLM responds.
+
+```js
+this.on('analyzeFeedback', async (req) => {
+  const id = await INSERT.into('FeedbackResults').entries({
+    originalText: req.data.text,
+    status: 'processing'
+  });
+
+  cds.spawn(() => processWithLLM(id, req.data.text));
+
+  return req.reply(202, { id, status: 'processing' });
+});
+
+async function processWithLLM(id, text) {
+  const response = await client.chatCompletion({
+    placeholderValues: { userText: text }
+  });
+  await UPDATE('FeedbackResults', id).set({
+    analysisJson: response.getContent(),
+    status: 'completed'
+  });
+}
+```
+
+### HANA Vector Type for RAG
+
+```cds
+entity Documents {
+  key id    : UUID;
+  content   : String(5000);
+  embedding : Vector(1536);
+}
+```
+
+Use this with the HANA Cloud Vector Engine and AI Core orchestration grounding to build RAG scenarios directly in your CAP data model.
+
+### Prompt Externalization
+
+Do not hardcode prompts in event handlers. Store them in JSON files or a CDS configuration entity so they can be updated without redeployment:
+
+```cds
+entity PromptTemplates {
+  key id       : UUID;
+  name         : String(100);
+  systemPrompt : LargeString;
+  updatedBy    : String;
+  modifiedAt   : Timestamp;
+}
+```
+
+### Memory and Deployment
+
+Node.js containers with AI SDK processing large text payloads require at least **512MB** memory in the MTA descriptor. The AI SDK and JSON payload handling consume more memory than typical CAP services.
+
+For complete SDK documentation, see **sap-cloud-sdk-ai** skill. For AI Core platform setup and orchestration configuration, see **sap-ai-core** skill.
 
 ## Database Setup
 
@@ -284,7 +440,7 @@ entity Books { ... }
 19. **references/cql-patterns.md** - CQL usage patterns
 20. **references/cli-complete.md** - Complete CLI reference
 21. **references/mcp-integration.md** - MCP server setup and usage guide *(new)*
-22. **references/mcp-use-cases.md** - Real-world MCP scenarios with quantified ROI *(new)*
+22. **references/mcp-use-cases.md** - Illustrative MCP workflow scenarios *(new)*
 
 ### Templates (8 files)
 1. **templates/bookshop-schema.cds** - Complete data model example
@@ -335,9 +491,7 @@ cds version               # Show version info
 - Don't write custom OData providers
 
 ## Version Information
-- **Skill Version**: 2.1.2
 - **CAP Version**: @sap/cds 9.7.x
-- **MCP Version**: @cap-js/mcp-server 0.0.3+
+- **MCP Version**: @cap-js/mcp-server 0.0.5
 - **LSP Version**: @sap/cds-lsp 9.7.x
-- **Last Verified**: 2026-02-22
 - **License**: GPL-3.0

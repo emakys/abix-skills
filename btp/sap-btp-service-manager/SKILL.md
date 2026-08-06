@@ -6,7 +6,10 @@ description: |
   Keywords: SAP Service Manager, BTP, service instances, service bindings, SMCTL, service broker, OSBAPI, Cloud Foundry, Kyma, Kubernetes, service-manager, service-operator-access, subaccount-admin, OAuth2, X.509, service marketplace, service plans, rate limiting, cf create-service, btp create services/instance, ServiceInstance CRD, ServiceBinding CRD
 license: GPL-3.0
 metadata:
-  version: 1.1.1
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
   last_verified: 2025-11-27
   documentation_source: "https://github.com/SAP-docs/sap-btp-service-manager"
   documentation_files_analyzed: 80+
@@ -105,7 +108,7 @@ smctl --version
 
 **Alternative Method (Prebuilt Binary)**:
 ```bash
-# Download from: [https://github.com/Peripli/service-manager-cli/releases/latest](https://github.com/Peripli/service-manager-cli/releases/latest)
+# Download from: https://github.com/Peripli/service-manager-cli/releases/latest
 tar -xzf smctl-*.tar.gz && chmod +x smctl
 sudo mv smctl /usr/local/bin/ && smctl --version
 ```
@@ -115,11 +118,11 @@ sudo mv smctl /usr/local/bin/ && smctl --version
 ### 2. Login
 ```bash
 # Interactive login
-smctl login -a [https://service-manager.cfapps.<region>.hana.ondemand.com](https://service-manager.cfapps.<region>.hana.ondemand.com) \
+smctl login -a https://service-manager.cfapps.<region>.hana.ondemand.com \
   --param subdomain=<subdomain>
 
 # Client credentials
-smctl login -a [https://service-manager.cfapps.<region>.hana.ondemand.com](https://service-manager.cfapps.<region>.hana.ondemand.com) \
+smctl login -a https://service-manager.cfapps.<region>.hana.ondemand.com \
   --param subdomain=<subdomain> --auth-flow client-credentials \
   --client-id <id> --client-secret <secret>
 ```
@@ -198,7 +201,7 @@ cf create-service-key <instance-name> <key-name>
 
 **1. Install cert-manager**:
 ```bash
-kubectl apply -f [https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml](https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml)
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
 ```
 
 **2. Create Service Manager resources**:
@@ -210,7 +213,7 @@ smctl get-binding sm-operator-binding -o json
 
 **3. Deploy operator**:
 ```bash
-helm repo add sap-btp-operator [https://sap.github.io/sap-btp-service-operator/](https://sap.github.io/sap-btp-service-operator/)
+helm repo add sap-btp-operator https://sap.github.io/sap-btp-service-operator/
 helm install sap-btp-operator sap-btp-operator/sap-btp-operator \
   --namespace sap-btp-operator --create-namespace \
   --set manager.secret.clientid=<id> \
@@ -298,7 +301,7 @@ Response:
 
 ### API Base URI
 
-`[https://service-manager.cfapps.<region>.hana.ondemand.com/v1/`](https://service-manager.cfapps.<region>.hana.ondemand.com/v1/`)
+`https://service-manager.cfapps.<region>.hana.ondemand.com/v1/`
 
 ### Rate Limiting
 
@@ -507,7 +510,7 @@ Detailed documentation in `references/` directory:
 - **Service Operator**: [https://github.com/SAP/sap-btp-service-operator](https://github.com/SAP/sap-btp-service-operator)
 
 ### API Documentation
-- **Swagger UI**: `[https://service-manager.cfapps.<region>.hana.ondemand.com/swaggerui/swagger-ui.html`](https://service-manager.cfapps.<region>.hana.ondemand.com/swaggerui/swagger-ui.html`)
+- **Swagger UI**: `https://service-manager.cfapps.<region>.hana.ondemand.com/swaggerui/swagger-ui.html`
 - **Regions**: [https://help.sap.com/docs/btp/sap-business-technology-platform/regions-and-api-endpoints-available-for-cloud-foundry-environment](https://help.sap.com/docs/btp/sap-business-technology-platform/regions-and-api-endpoints-available-for-cloud-foundry-environment)
 
 ### Related Documentation
@@ -544,5 +547,7 @@ When troubleshooting:
 
 **License**: GPL-3.0
 **Version**: 1.1.1
-**Maintained by**: E.J.
+**Maintained by**: Eduard Jiglau
+**Email**: hello@sap-ai-skills.com
+**Website**: https://sap-ai-skills.com
 **Repository**: [https://github.com/secondsky/sap-skills](https://github.com/secondsky/sap-skills)

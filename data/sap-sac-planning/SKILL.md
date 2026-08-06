@@ -1,34 +1,48 @@
 ---
 name: sap-sac-planning
 description: |
-  This skill should be used when developing SAP Analytics Cloud (SAC) planning applications, including building planning-enabled stories, analytics designer applications with planning functionality, data actions, multi actions, version management, and planning workflows. Use when creating planning models, implementing data entry forms, configuring spreading/distribution/allocation, setting up data locking, building calendar-based planning processes with approval workflows, writing JavaScript scripts for planning automation, using the getPlanning() API, PlanningModel API, or DataSource API for planning scenarios, troubleshooting planning performance issues, integrating predictive forecasting into planning workflows, implementing Seamless Planning with SAP Datasphere, configuring BPC live connections for BW on HANA integration, building value driver trees for what-if analysis, or debugging data actions with tracing.
+  SAP Analytics Cloud (SAC) planning guidance for planning models, planning-enabled stories, data actions, multi actions, version management, data locking, calendar/input workflows, allocations, value driver trees, BPC live planning, and Seamless Planning with SAP Datasphere. Use this for planning design, planning APIs, data action debugging, planning performance reviews, and authenticated SAC planning story triage in Microsoft Edge via CDP; use sap-sac-scripting for non-planning SAC scripts and sap-datasphere for Datasphere modeling.
 license: GPL-3.0
 metadata:
-  version: 1.4.0
-  last_verified: 2025-12-27
-  sac_version: "2025.25"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
+  last_verified: 2026-06-11
+  sac_version: "2026.8"
   documentation_source: "https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/00f68c2e08b941f081002fd3691d86a7"
-  api_reference: "https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2025.25/en-US/index.html"
-  reference_files: 24
-  status: production
+  api_reference: "https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2026.8/en-US/index.html"
+  reference_files: 26
+  status: docs_audited_runtime_pending
 ---
 
 # SAP Analytics Cloud Planning Skill
+
+## Related Skills
+
+- **sap-sac-scripting**: Use for Analytics Designer/OSE scripts that automate planning interactions
+- **sap-datasphere**: Use for Seamless Planning with Datasphere and data foundation design
+- **sap-sac-custom-widget**: Use when planning applications include custom widgets
+- **sap-dependency-security**: Use for source-pinned SAC MCP setup and local tooling trust
 
 Comprehensive skill for building enterprise planning applications with SAP Analytics Cloud.
 
 ---
 
-## Reference Add-Ons (2025.25)
+## Reference Add-Ons (2026)
 
 - Execution guides: `references/data-actions.md`, `references/multi-actions.md`, `references/allocations.md`, `references/scheduling-calendar.md`, `references/data-locking.md`
 - Modeling & governance: `references/modeling-basics.md`, `references/version-management.md`, `references/version-edit-modes.md`, `references/version-publishing-notes.md`
 - Calculations & intelligence: `references/advanced-formulas.md`, `references/predictive-conversion.md`, `references/ai-planning-analytics.md`, `references/api-snippets.md`
 - Workflow aids: `references/input-tasks.md`, `references/job-monitoring.md`
-- **New in 2025**: `references/seamless-planning-datasphere.md`, `references/bpc-live-connection.md`, `references/value-driver-trees.md`, `references/data-action-tracing.md`
+- Browser triage: shared `sap-browser-automation` for manual in-app authentication, approved Edge profile copying, fresh Edge/CDP setup, `DevToolsActivePort` fallback, and target selection; local `references/edge-cdp-control.md` retains planning writeback safety
+- **Added in 2025**: `references/seamless-planning-datasphere.md`, `references/bpc-live-connection.md`, `references/value-driver-trees.md`, `references/data-action-tracing.md`
+- **New in 2026**: `references/whats-new-2026-planning.md`
 - Ready-to-use templates: `templates/data-action-checklist.md`, `templates/multi-action-checklist.md`, `templates/parameter-table.md`
 
 Use these to keep instructions concise in this file while deep-dives remain one click away.
+
+For authenticated SAC planning browser inspection, use `sap-browser-automation` for the browser/authentication layer and load local `references/edge-cdp-control.md` for planning-specific boundaries. Use CDP for local read-only triage of planning tables, console errors, data action status, and approved screenshots; require explicit approval before any writeback, publish, data action, multi action, or lock-changing interaction.
 
 ---
 
@@ -41,6 +55,7 @@ Use these to keep instructions concise in this file while deep-dives remain one 
 - [BPC Live Connection](#bpc-live-connection)
 - [Value Driver Trees](#value-driver-trees)
 - [Data Action Tracing](#data-action-tracing)
+- [What's New in 2026](#whats-new-in-2026)
 - [Bundled Resources](#bundled-resources)
 
 ## When to Use This Skill
@@ -333,7 +348,11 @@ When using public dimensions, create cross-model parameters to share values acro
 
 ## S/4HANA ACDOCP Export
 
-Export native planning data from SAC to SAP S/4HANA's ACDOCP table (central ERP plan data storage).
+Legacy/deprecated path for exporting native planning data from SAC to SAP
+S/4HANA's ACDOCP table (central ERP plan data storage). As of Q2 2026, SAP
+deprecates exporting model data to SAP S/4HANA and recommends the write-back
+integration scenario instead. Keep this section for maintaining existing
+landscapes, not as the default design for new planning solutions.
 
 ### Architecture
 
@@ -363,7 +382,10 @@ SAC Planning Model → Data Export Service → Cloud Connector → API_PLPACDOCP
 - **Deletions don't propagate**: Set values to 0 and re-export to clear ACDOCP data
 - Filters cannot be changed after export job creation—name jobs descriptively
 
-### Quick Setup
+### Legacy Maintenance Checklist
+
+Do not create this path for new implementations without confirming the
+deprecation impact, SAP Note 3707288 guidance, and a supported migration path.
 
 1. Enable Legacy Mode on planning model
 2. Create S/4HANA connection with Cloud Connector
@@ -372,7 +394,7 @@ SAC Planning Model → Data Export Service → Cloud Connector → API_PLPACDOCP
 5. Define export scope (FiscalYearPeriod + PlanningCategory mandatory)
 6. Schedule or run export
 
-**Reference**: See `references/s4hana-acdocp-export.md` for complete configuration guide, troubleshooting, and SAP documentation links.
+**Reference**: See `references/s4hana-acdocp-export.md` for legacy configuration details and `references/whats-new-2026-planning.md` for the Q2 2026 deprecation note.
 
 ---
 
@@ -861,8 +883,8 @@ console.log("Lock state: " + lockState);
 ## Official Documentation Links
 
 **Essential Resources**:
-- **SAP Analytics Cloud Help (2025.23)**: [https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e](https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e)
-- **API Reference (2025.23)**: [https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2025.23/en-US/index.html](https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2025.23/en-US/index.html)
+- **SAP Analytics Cloud Help**: [https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e](https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e)
+- **API Reference (2026.8)**: [https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2026.8/en-US/index.html](https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/2026.8/en-US/index.html)
 - **Analytics Designer Overview**: [https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e/0798b81f9130425389dec84e19326b93.html](https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e/0798b81f9130425389dec84e19326b93.html)
 - **Planning Overview**: [https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e/cd897576c3344475a208c2f7a52f151e.html](https://help.sap.com/docs/SAP_ANALYTICS_CLOUD/18850a0e13944f53aa8a8b7c094ea29e/cd897576c3344475a208c2f7a52f151e.html)
 
@@ -904,7 +926,7 @@ console.log("Lock state: " + lockState);
 
 ## Bundled Reference Files
 
-This skill includes comprehensive reference documentation (24 files):
+This skill includes comprehensive reference documentation (26 files):
 
 **API & Scripting**:
 1. **references/api-reference.md**: Complete Analytics Designer API for planning
@@ -930,19 +952,23 @@ This skill includes comprehensive reference documentation (24 files):
 15. **references/version-publishing-notes.md**: Publishing best practices
 
 **Integration & Advanced**:
-16. **references/s4hana-acdocp-export.md**: S/4HANA integration, ACDOCP export, OData setup
+16. **references/s4hana-acdocp-export.md**: Legacy/deprecated S/4HANA ACDOCP export reference for existing landscapes
 17. **references/ai-planning-analytics.md**: AI-powered planning features
 
 **Development**:
 18. **references/javascript-patterns.md**: Code snippets, patterns, best practices
 19. **references/modeling-basics.md**: Planning model fundamentals
 20. **references/data-locking.md**: Configure and manage data locks
+21. **references/edge-cdp-control.md**: SAC planning browser add-on for the shared `sap-browser-automation` authentication, Edge/CDP, and recovery layer
 
 **New in 2025**:
-21. **references/seamless-planning-datasphere.md**: Seamless Planning architecture, prerequisites, configuration with SAP Datasphere
-22. **references/bpc-live-connection.md**: BPC Embedded live connection, planning sequences, master data planning
-23. **references/value-driver-trees.md**: Value driver tree setup, node configuration, JavaScript API
-24. **references/data-action-tracing.md**: Data action tracing, tracepoints, debugging techniques
+22. **references/seamless-planning-datasphere.md**: Seamless Planning architecture, prerequisites, configuration with SAP Datasphere
+23. **references/bpc-live-connection.md**: BPC Embedded live connection, planning sequences, master data planning
+24. **references/value-driver-trees.md**: Value driver tree setup, node configuration, JavaScript API
+25. **references/data-action-tracing.md**: Data action tracing, tracepoints, debugging techniques
+
+**New in 2026**:
+26. **references/whats-new-2026-planning.md**: QRC1 and QRC2 2026 planning features, asymmetric reporting, composite versioning, AI-assisted data actions, API enhancements
 
 ---
 
@@ -968,6 +994,30 @@ For troubleshooting:
 - Test with simplified scenarios first
 - Check user permissions and data access
 
+## What's New in 2026
+
+### QRC1 2026 (2026.3)
+
+- **AI-Assisted Data Actions**: Generate advanced formula scripts from natural-language comments, or generate comments from existing scripts.
+- **Live Data Connectivity to Snowflake**: Planning-capable models can connect live to Snowflake.
+- **Story Versioning**: Up to 10 major versions of stories for safe iterative development.
+
+### QRC2 2026 (2026.8)
+
+- **Asymmetric Reporting**: Tables with differing time ranges, hierarchies, and measures per row/column. Supports planning data entry.
+- **Composite Versioning**: Manage up to 10 versions of composites with rollback support.
+- **Data Export API in Job Monitor**: Track data extraction and delta calculation jobs.
+- **Data Import Service API Enhancements**: Import master data into Datasphere public dimensions; import external fact data to seamless planning private versions.
+- **onAfterExecute Event Enhancement**: Additional upload info (message, statistics, rejected records, target version, file name).
+- **Multi-Action API Step: HTTP 204 Response**: Accepted as success response.
+- **Calendar: Team References Retained**: Teams auto-sync on event activation.
+- **Mixing Advanced Filters in Just Ask**: Exclude date members with date range filters.
+- **Deprecation: Export Model Data to S/4HANA**: Use write-back integration instead.
+
+**Reference**: See `references/whats-new-2026-planning.md` for detailed descriptions, usage instructions, and source citations.
+
+---
+
 ## Bundled Resources
 
 ### Reference Documentation
@@ -979,6 +1029,7 @@ For troubleshooting:
 - `references/version-management.md` - Version management best practices
 - `references/api-reference.md` - Planning API reference
 - `references/javascript-patterns.md` - JavaScript scripting patterns
+- `references/edge-cdp-control.md` - Planning-specific add-on for the shared `sap-browser-automation` Edge/CDP and authentication layer
 
 ### Templates
 - `templates/data-action-checklist.md` - Data action implementation checklist
@@ -988,6 +1039,8 @@ For troubleshooting:
 ---
 
 **License**: GPL-3.0
-**Version**: 1.4.0
-**Maintained by**: E.J.
+**Version**: 1.5.0
+**Maintained by**: Eduard Jiglau
+**Email**: hello@sap-ai-skills.com
+**Website**: https://sap-ai-skills.com
 **Repository**: [https://github.com/secondsky/sap-skills](https://github.com/secondsky/sap-skills)

@@ -75,14 +75,14 @@ Widget Add-Ons allow customization of SAC's built-in widgets:
     {
       "kind": "main",
       "tag": "my-addon-main",
-      "url": "[https://host.com/addon-main.js",](https://host.com/addon-main.js",)
+      "url": "https://host.com/addon-main.js",
       "integrity": "",
       "ignoreIntegrity": true
     },
     {
       "kind": "builder",
       "tag": "my-addon-builder",
-      "url": "[https://host.com/addon-builder.js",](https://host.com/addon-builder.js",)
+      "url": "https://host.com/addon-builder.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
@@ -412,4 +412,4 @@ Same process as custom widgets:
 
 ---
 
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-06-12

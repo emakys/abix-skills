@@ -63,12 +63,12 @@ Tools de escritura disponibles en modo SAP (`--exposition=readonly,high`). Lock/
 
 | Tool | Descripcion |
 |------|-------------|
-| `CreateView` | Crea CDS View. Params: `view_name`, `package`, `transport_request`, `source` |
-| `UpdateView` | Actualiza DDL source |
-| `DeleteView` | Elimina view |
-| `ActivateView` | Activa |
-| `CheckView` | Syntax check CDS |
-| `GetView` | Obtiene definicion actual |
+| `CreateDdl` | Crea CDS View. Params: `ddl_name`, `package`, `transport_request`, `source` |
+| `UpdateDdl` | Actualiza DDL source |
+| `DeleteDdl` | Elimina view |
+| `ActivateDdl` | Activa |
+| `CheckDdl` | Syntax check CDS |
+| `GetDdl` | Obtiene definicion actual |
 
 ## Metadata Extension (DDLX)
 

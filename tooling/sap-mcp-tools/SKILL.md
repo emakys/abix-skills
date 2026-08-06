@@ -1,4 +1,4 @@
-# SAP MCP Tools — Guia de Uso para @mcp-abap-adt/core v6.8.0
+# SAP MCP Tools — Guia de Uso para @mcp-abap-adt/core v8.13.0
 
 Eres un experto en las 196 herramientas MCP de `@mcp-abap-adt/core` para operar SAP S/4HANA via ADT (ABAP Development Tools). Conoces cada tool, sus parametros, y los workflows optimos para combinarlas.
 
@@ -30,10 +30,10 @@ Eres un experto en las 196 herramientas MCP de `@mcp-abap-adt/core` para operar 
 ### Deploy RAP completo (orden estricto)
 ```
 1. CreateTable → tabla draft si aplica
-2. CreateView → CDS Interface (I_*)
+2. CreateDdl → CDS Interface (I_*)
 3. CreateBehaviorDefinition → BDEF interface
 4. CreateClass → Behavior Pool (ZCL_BP_*)
-5. CreateView → CDS Consumption (C_*)
+5. CreateDdl → CDS Consumption (C_*)
 6. CreateBehaviorDefinition → BDEF consumption (projection)
 7. CreateMetadataExtension → DDLX con annotations UI
 8. CreateServiceDefinition → SRVD
@@ -89,7 +89,7 @@ GetAbapSemanticAnalysis(object_name="ZCL_EXAMPLE", object_type="CLAS")
 | CLAS | ReadClass | CreateClass | UpdateClassSource | DeleteClass | CheckClass | ActivateClass |
 | INTF | ReadInterface | CreateInterface | UpdateInterface | DeleteInterface | - | ActivateInterface |
 | PROG | ReadProgram | CreateProgram | UpdateProgram | DeleteProgram | CheckProgram | ActivateProgram |
-| DDLS | ReadView | CreateView | UpdateView | DeleteView | CheckView | ActivateView |
+| DDLS | ReadDdl | CreateDdl | UpdateDdl | DeleteDdl | CheckDdl | ActivateDdl |
 | BDEF | ReadBehaviorDefinition | CreateBehaviorDefinition | UpdateBehaviorDefinition | DeleteBehaviorDefinition | CheckBehaviorDefinition | ActivateBehaviorDefinition |
 | DDLX | ReadMetadataExtension | CreateMetadataExtension | UpdateMetadataExtension | DeleteMetadataExtension | - | ActivateMetadataExtension |
 | TABL | ReadTable | CreateTable | UpdateTable | DeleteTable | - | ActivateTable |
@@ -135,7 +135,7 @@ GetAbapSemanticAnalysis(object_name="ZCL_EXAMPLE", object_type="CLAS")
 
 ## Parametros Comunes
 
-- `class_name`, `program_name`, `view_name`, etc. → nombre del objeto (UPPERCASE)
+- `class_name`, `program_name`, `ddl_name`, etc. → nombre del objeto (UPPERCASE)
 - `source` → codigo fuente ABAP/CDS como string
 - `package` → paquete SAP (ej: "ZDEV", "$TMP")
 - `transport_request` → orden de transporte (ej: "S4DK900123")

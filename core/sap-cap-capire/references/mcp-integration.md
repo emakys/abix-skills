@@ -1,5 +1,11 @@
 # CAP MCP Server Integration Guide
 
+## Operation Safety
+
+- **Classification**: `local-only`
+- The CAP MCP server reads local CAP model/docs and has no bundled tenant credentials, destinations, tokens, or service keys.
+- Keep examples read-only by default; explicit user approval is required before changing MCP config or running commands that deploy, publish, or affect remote systems.
+
 ## Overview
 
 The CAP MCP (Model Context Protocol) server provides AI agents with live access to your CAP project's compiled model and documentation. This integration enables Claude Code agents to:
@@ -17,10 +23,10 @@ The CAP MCP server is distributed as an npm package that can be run directly wit
 
 ```bash
 # No installation needed - npx auto-downloads and runs
-npx -y @cap-js/mcp-server
+npx -y @cap-js/mcp-server@0.0.5
 
 # Or install globally for faster access
-npm install -g @cap-js/mcp-server
+npm install -g @cap-js/mcp-server@0.0.5
 ```
 
 **Requirements**:
@@ -112,7 +118,7 @@ The sap-cap-capire plugin automatically configures the MCP server when enabled. 
 {
   "sap-cap-capire": {
     "command": "npx",
-    "args": ["-y", "@cap-js/mcp-server"],
+    "args": ["-y", "@cap-js/mcp-server@0.0.5"],
     "env": {}
   }
 }
@@ -127,7 +133,7 @@ Add to your Cline settings (`.vscode/cline_mcp_settings.json`):
   "mcpServers": {
     "cap-mcp": {
       "command": "npx",
-      "args": ["-y", "@cap-js/mcp-server"],
+      "args": ["-y", "@cap-js/mcp-server@0.0.5"],
       "env": {}
     }
   }
@@ -143,7 +149,7 @@ Add to your MCP configuration (`~/.config/opencode/mcp.json`):
   "mcp": {
     "cap-mcp": {
       "type": "local",
-      "command": ["npx", "-y", "@cap-js/mcp-server"],
+      "command": ["npx", "-y", "@cap-js/mcp-server@0.0.5"],
       "enabled": true
     }
   }
@@ -159,7 +165,7 @@ Create or update `mcp.json` in your project root:
   "servers": {
     "cap-mcp": {
       "command": "npx",
-      "args": ["-y", "@cap-js/mcp-server"],
+      "args": ["-y", "@cap-js/mcp-server@0.0.5"],
       "env": {},
       "type": "stdio"
     }
@@ -215,13 +221,13 @@ MCP tools search the compiled model (CSN) and official docs. File reads show onl
 **Solutions**:
 ```bash
 # Option 1: Install globally for faster access
-npm install -g @cap-js/mcp-server
+npm install -g @cap-js/mcp-server@0.0.5
 
 # Option 2: Use npx (auto-installs on first run)
-npx -y @cap-js/mcp-server
+npx -y @cap-js/mcp-server@0.0.5
 
 # Option 3: Add to project devDependencies
-npm install --save-dev @cap-js/mcp-server
+npm install --save-dev @cap-js/mcp-server@0.0.5
 ```
 
 ### Issue: search_model returns no results
@@ -285,7 +291,7 @@ You can use MCP tools from command line for testing:
 
 ```bash
 # Install globally
-npm i -g @cap-js/mcp-server
+npm i -g @cap-js/mcp-server@0.0.5
 
 # Search compiled model
 cds-mcp search_model . Books entity
@@ -323,4 +329,4 @@ Each agent automatically leverages MCP tools as part of their workflow.
 - **License**: Apache-2.0
 - **Version**: 0.0.3+ (updated regularly)
 
-For real-world use cases with ROI quantification, see [MCP Use Cases](mcp-use-cases.md).
+For illustrative workflow scenarios and planning assumptions, see [MCP Use Cases](mcp-use-cases.md).

@@ -8,7 +8,10 @@ description: |
   Keywords: SAP BTP, Business Technology Platform, CAP, Cloud Application Programming Model, ABAP Cloud, Cloud Foundry, Kyma, SAP HANA Cloud, SAP Fiori, SAPUI5, CI/CD, observability, multitenant, SaaS, SAP BTP ABAP environment, SAP Business Application Studio, SAP Cloud SDK, SAP Integration Suite, SAP Event Mesh, SAP Connectivity Service, SAP Destination Service, XSUAA, OAuth, OpenID Connect, OData, CDS, Core Data Services, ABAP CDS, ABAP RESTful Application Programming Model, RAP, ABAP development, SAP BTP development
 license: GPL-3.0
 metadata:
-  version: 1.1.0
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
   last_verified: 2025-11-27
   source_last_updated: 2025-11-21
   review_status: "Complete - Phase 1-14 audit"
@@ -24,6 +27,8 @@ metadata:
 - **sap-fiori-tools**: Use for UI development, Fiori application setup, and frontend deployment
 - **sap-abap**: Use for ABAP Cloud development, RAP patterns, and ABAP Environment specifics
 - **sap-btp-connectivity**: Use for implementing secure connections to on-premise systems
+- **sap-ai-core**: Use for AI Core platform setup, model deployment, and orchestration
+- **sap-cloud-sdk-ai**: Use for SDK-level AI integration in CAP applications
 
 Comprehensive guidance for developing, deploying, and operating business applications on SAP Business Technology Platform.
 
@@ -56,6 +61,7 @@ Use when:
 - Connecting applications to SAP S/4HANA, SuccessFactors, or on-premise systems
 - Building multitenant SaaS applications
 - Implementing side-by-side extensions for SAP solutions
+- Building AI-powered extensions (LLM analysis, document processing, intelligent automation)
 - Setting up CI/CD pipelines for SAP BTP
 - Implementing observability with SAP Cloud ALM or SAP Cloud Logging
 - Using SAP HANA Cloud for data persistence
@@ -89,6 +95,19 @@ Key capabilities:
 - Platform-agnostic design (no vendor lock-in)
 
 For CAP details: See `references/cap-development.md`
+
+### AI-Powered Extensions with CAP
+
+Build intelligent side-by-side extensions by combining CAP with SAP AI Core:
+
+1. **Bind AI Core** to your CAP app via MTA (service: `aicore`, plan: `extended`)
+2. **Use SAP Cloud SDK for AI** (`@sap-ai-sdk/orchestration`) in CAP event handlers — never raw HTTP calls
+3. **Process asynchronously**: LLM calls can take 30-60 seconds. Return `202 Accepted` and use `cds.spawn` for background processing to avoid BTP load balancer timeouts
+4. **Store vectors**: Use HANA Cloud `Vector(1536)` type in CDS entities for RAG scenarios
+5. **Externalize prompts**: Store in JSON files or CDS entities for updates without redeployment
+6. **Allocate memory**: At least 512MB for Node.js containers with AI SDK
+
+For complete code examples, see **sap-cap-capire** skill (AI Integration section) and **sap-cloud-sdk-ai** skill (CAP Integration subsection).
 
 ### ABAP Cloud Development
 
@@ -426,8 +445,6 @@ For partner details: See `references/partners.md`
 
 ## Version Information
 
-- **Skill Version**: 1.1.0
-- **Last Verified**: 2025-11-27
 - **Source Last Updated**: 2025-11-21
 - **Based On**: SAP BTP Developer Guide ([https://github.com/SAP-docs/btp-developer-guide](https://github.com/SAP-docs/btp-developer-guide))
 - **Next Review**: 2026-02-21

@@ -1,12 +1,20 @@
 # SAP Datasphere MCP Tools - Complete Reference
 
+## Operation Safety
+
+- **Classification**: `read-only tenant`, `mutating tenant`, `destructive`
+- This MCP server uses tenant OAuth credentials from environment variables and can call live SAP Datasphere APIs.
+- Treat metadata, catalog, list, search, and query tools as read-only tenant operations. Require explicit user approval before create, update, delete, reset, deploy, publish, trigger, or destructive actions.
+- Do not claim live tenant verification unless matching evidence is recorded in the source verification ledger.
+
 ## Overview
 
 This document provides comprehensive technical reference for all 45 MCP tools provided by the SAP Datasphere MCP Server (@mariodefe/sap-datasphere-mcp).
 
 **MCP Server Details:**
 - **Package:** @mariodefe/sap-datasphere-mcp
-- **Version:** Latest from npm
+- **Approved Pin:** 1.2.1
+- **Latest Observed:** 1.4.0 in `docs/project/package-evidence/2026-06-15.json` (upgrade candidate, not automatically approved)
 - **GitHub:** https://github.com/MarioDeFelipe/sap-datasphere-mcp
 - **Authentication:** OAuth 2.0 Client Credentials
 - **Protocol:** Model Context Protocol (MCP)
@@ -15,11 +23,11 @@ This document provides comprehensive technical reference for all 45 MCP tools pr
 ## Installation
 
 ```bash
-# Global installation
-npm install -g @mariodefe/sap-datasphere-mcp
+# Global installation with the approved pin
+npm install -g @mariodefe/sap-datasphere-mcp@1.2.1
 
 # Verify installation
-npx @mariodefe/sap-datasphere-mcp --version
+npx @mariodefe/sap-datasphere-mcp@1.2.1 --version
 ```
 
 ## Configuration
@@ -1408,7 +1416,7 @@ Quick find: "fact_sal*"
 
 ```bash
 # Test connection
-npx @mariodefe/sap-datasphere-mcp --test
+npx @mariodefe/sap-datasphere-mcp@1.2.1 --test
 
 # Enable debug logging
 export LOG_LEVEL=debug

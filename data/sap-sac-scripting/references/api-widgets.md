@@ -2,7 +2,7 @@
 
 Complete reference for widget scripting APIs in SAP Analytics Cloud.
 
-**Source**: [Analytics Designer API Reference 2025.14](https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/release/en-US/index.html)
+**Source**: [Analytics Designer API Reference (current release)](https://help.sap.com/doc/958d4c11261f42e992e8d01a4c0dde25/release/en-US/index.html)
 
 ---
 
@@ -449,7 +449,7 @@ Text_1.setText("Revenue: " + revenue.formattedValue);
 
 ```javascript
 // Set image source
-Image_1.setSrc("[https://example.com/image.png](https://example.com/image.png)");
+Image_1.setSrc("https://example.com/image.png");
 
 // From content network
 Image_1.setSrc("sap-icon://home");

@@ -1,14 +1,21 @@
 ---
 name: sap-datasphere
-description: "SAP Datasphere development skill with 3 specialized agents, 5 slash commands, and validation hooks. Use when building data warehouses on SAP BTP, creating analytic models, configuring data flows and replication flows, setting up connections, managing spaces and users, implementing data access controls, or using the datasphere CLI. Covers Data Builder, Business Builder, analytic models, 40+ connection types, real-time replication, task chains, content transport, and data marketplace."
+description: "SAP Datasphere development skill with 3 specialized agents, 5 slash commands, and validation hooks. Use when building data warehouses on SAP BTP, creating analytic models, configuring data flows and replication flows, setting up connections, managing spaces and users, implementing data access controls, using the datasphere CLI, or inspecting authenticated Datasphere browser UI state with Microsoft Edge CDP. Covers Data Builder, Business Builder, analytic models, 40+ connection types, real-time replication, task chains, content transport, and data marketplace."
 license: GPL-3.0
 metadata:
-  version: 2.1.0
-  last_verified: 2025-12-28
-  keywords: [sap datasphere, data warehouse cloud, dwc, data builder, business builder, analytic model, graphical view, sql view, transformation flow, replication flow, data flow, task chain, remote table, local table, datasphere connection, datasphere space, data access control, elastic compute node, datasphere cli, data products, data marketplace, catalog, governance]
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
+  last_verified: 2026-06-11
+  keywords: [sap datasphere, data warehouse cloud, dwc, data builder, business builder, analytic model, graphical view, sql view, transformation flow, replication flow, data flow, task chain, remote table, local table, datasphere connection, datasphere space, data access control, elastic compute node, datasphere cli, data products, data marketplace, catalog, governance, business data cloud, bdc, sap databricks]
 ---
 
 # SAP Datasphere Skill
+
+## Related Skills
+
+- **sap-dependency-security**: Use for secure dependency policy, lockfile hygiene, and exact MCP server pins when managing large connector or integration projects with package-managed tooling
 
 ## Table of Contents
 
@@ -38,7 +45,11 @@ metadata:
 
 ## Overview
 
-SAP Datasphere is SAP's cloud-native data warehouse solution on SAP Business Technology Platform (BTP). This skill provides comprehensive guidance for data acquisition, preparation, modeling, administration, and integration.
+SAP Datasphere is SAP's cloud-native data warehouse solution on SAP Business Technology Platform (BTP). It serves as the **data foundation** within **SAP Business Data Cloud (BDC)**, SAP's unified data and analytics platform that also includes SAP Analytics Cloud, SAP HANA Cloud, SAP Databricks, and curated data products. See `references/business-data-cloud.md` for the BDC architecture and how Datasphere fits within it.
+
+This skill provides comprehensive guidance for data acquisition, preparation, modeling, administration, and integration.
+
+## When to Use This Skill
 
 **Use this skill when**:
 - Creating data warehouses on SAP BTP
@@ -48,6 +59,9 @@ SAP Datasphere is SAP's cloud-native data warehouse solution on SAP Business Tec
 - Managing spaces, users, and access controls
 - Implementing real-time data replication
 - Monitoring data integration tasks
+- Inspecting authenticated Datasphere browser UI state in Microsoft Edge when MCP, CLI, logs, or exported artifacts cannot observe the needed state
+
+For Datasphere browser triage, use the shared `sap-browser-automation` skill for manual in-app authentication, consent-gated authenticated Edge profile copying, fresh loopback CDP startup, target selection, and recovery. The local `references/edge-cdp-control.md` add-on retains Datasphere-specific boundaries. Use CDP for local read-only inspection of Data Builder, Business Builder, monitoring, connection, catalog, and admin UI state; ask before saving, deploying, deleting, importing, exporting, running task chains, or changing users/roles.
 
 ---
 
@@ -588,11 +602,24 @@ For transport procedures, see `references/content-transport.md`.
 
 **Best Practices & Updates:**
 12. **`references/best-practices-patterns.md`** - Architecture patterns, naming conventions, performance optimization, checklists
-13. **`references/whats-new-2025.md`** - Q1-Q4 2025 features, Generic HTTP, REST API tasks, deprecations
+13. **`references/whats-new-2025.md`** - 2025 archive: Q1-Q4 2025 features, Generic HTTP, REST API tasks, deprecations
+14. **`references/whats-new-2026.md`** - 2026 Datasphere/BDC features, including Q1-Q2 updates and 2026.11 items such as HANA Cloud calculation-view semantic onboarding, replication-flow scheduling, runtime-settings transport, SAP Snowflake, and SAPPHIRE announcements
+
+**Platform Context:**
+15. **`references/business-data-cloud.md`** - SAP Business Data Cloud architecture, Databricks integration, data products vs. marketplace, BDC Connect
 
 **MCP Integration:**
-14. **`references/mcp-tools-reference.md`** - Complete MCP tool reference, 45 tools across 8 categories, API documentation, authentication patterns
-15. **`references/mcp-use-cases.md`** - 8 real-world use cases with personas, time savings, and ROI analysis ($159K+/year savings)
+16. **`references/mcp-tools-reference.md`** - Complete MCP tool reference, 45 tools across 8 categories, API documentation, authentication patterns
+17. **`references/mcp-use-cases.md`** - 8 illustrative source-material use cases with personas and planning assumptions
+18. **`references/edge-cdp-control.md`** - Datasphere-specific add-on for the shared `sap-browser-automation` Edge/CDP and authentication layer
+
+### MCP Reference Routing
+
+Search MCP references before loading them. Use `rg -n "<space|view|connection|task|lineage|marketplace|governance|admin>" references/mcp-*.md` to locate the exact tool or scenario, then open only that excerpt.
+
+- Use `references/mcp-tools-reference.md` for tool names, inputs, and direct tenant-operation boundaries.
+- Use `references/mcp-use-cases.md` only when choosing a workflow pattern or reviewing illustrative impact assumptions; do not load the full use-case guide for ordinary tool lookup.
+- If MCP access is unavailable, fall back to the matching CLI/reference command and mark tenant checks pending.
 
 ### Plugin Components
 
@@ -608,6 +635,7 @@ This plugin includes 3 specialized agents, 5 slash commands, and validation hook
 - `/datasphere-view-template` - Generate view templates (graphical/SQL)
 - `/datasphere-connection-guide` - Step-by-step connection setup
 - `/datasphere-cli` - CLI command reference and examples
+- `/datasphere-mcp-tools` - SAP Datasphere MCP tool reference and usage guidance
 
 **Hooks** (in `hooks/`):
 - PreToolUse validation for SQL/SQLScript code quality
@@ -615,7 +643,15 @@ This plugin includes 3 specialized agents, 5 slash commands, and validation hook
 
 ## MCP Integration
 
-This skill integrates with the **SAP Datasphere MCP Server** (@mariodefe/sap-datasphere-mcp) providing 45 tools for live tenant interaction.
+This skill includes a connection recipe for the **SAP Datasphere MCP Server** (`@mariodefe/sap-datasphere-mcp`). The bundled MCP config uses the approved exact pin `1.2.1`, governed by **sap-dependency-security** and validated by `npm run validate:mcp-security`; package evidence records `1.4.0` as an upgrade candidate. Treat MCP behavior and live tenant tool counts as pending until your harness loads the server and verifies the available tools.
+
+| MCP detail | Value |
+|------------|-------|
+| Command | `npx` |
+| Args | `-y @mariodefe/sap-datasphere-mcp@1.2.1` |
+| Required env | `DATASPHERE_BASE_URL`, `DATASPHERE_CLIENT_ID`, `DATASPHERE_CLIENT_SECRET`, `DATASPHERE_TOKEN_URL` |
+| Operation safety | Tenant read tools plus mutating/destructive tools; ask before create, update, delete, reset, deploy, publish, or trigger operations |
+| Fallback | Use Datasphere CLI/reference guidance and mark live checks pending |
 
 ### MCP Tools
 
@@ -641,10 +677,10 @@ Required environment variables:
 
 ### Performance
 
-- Sub-100ms metadata queries (cached)
-- 100-500ms catalog operations
-- 500-2,000ms OData queries
-- Batch processing up to 50,000 records
+Performance depends on tenant size, network latency, payload size, permissions,
+and server version. Treat any example timings or batch limits in MCP reference
+material as illustrative until measured in the target tenant and recorded as
+evidence.
 
 ### File Structure
 ```
@@ -684,7 +720,10 @@ plugins/sap-datasphere/
             ├── catalog-governance.md
             ├── best-practices-patterns.md
             ├── whats-new-2025.md
-            └── mcp-tools-reference.md    # MCP technical reference
+            ├── whats-new-2026.md
+            ├── business-data-cloud.md
+            ├── mcp-tools-reference.md    # MCP technical reference
+            ├── edge-cdp-control.md       # Edge CDP browser triage
 ```
 
 ## Documentation Links
@@ -695,5 +734,3 @@ plugins/sap-datasphere/
 - **API Reference**: [https://api.sap.com/package/saaborddatasphere](https://api.sap.com/package/saaborddatasphere)
 
 ---
-
-**Version**: 2.1.0 | **Last Verified**: 2025-12-28

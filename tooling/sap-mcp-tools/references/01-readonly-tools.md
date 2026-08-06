@@ -23,7 +23,7 @@ Tools disponibles en modo REPO (`--exposition=readonly`). No modifican el sistem
 | `ReadServiceDefinition` | SRVD | Lee source y metadata de Service Definition |
 | `ReadStructure` | STRU | Lee definicion de estructura |
 | `ReadTable` | TABL | Lee definicion y campos de tabla |
-| `ReadView` | DDLS | Lee DDL source y metadata de CDS View |
+| `ReadDdl` | DDLS | Lee DDL source y metadata de CDS View (renombrado desde ReadView en core v8.0.0) |
 
 ## Lectura Especifica de Clases
 
@@ -53,7 +53,7 @@ Tools disponibles en modo REPO (`--exposition=readonly`). No modifican el sistem
 | `GetAbapSemanticAnalysis` | Syntax check real en servidor SAP. Retorna errores con linea/columna |
 | `CheckClass` | Verificacion de sintaxis de clase |
 | `CheckProgram` | Verificacion de sintaxis de programa |
-| `CheckView` | Verificacion de sintaxis de CDS View |
+| `CheckDdl` | Verificacion de sintaxis de CDS View |
 | `CheckBehaviorDefinition` | Verificacion de BDEF |
 | `CheckFunctionModule` | Verificacion de Function Module |
 

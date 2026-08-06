@@ -9,7 +9,10 @@ description: |
   Covers: 91 commands, 17+ output formats, HDI container management, cloud operations.
 license: GPL-3.0
 metadata:
-  version: "1.1.0"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
   last_verified: "2025-11-26"
 ---
 
@@ -21,6 +24,7 @@ metadata:
 - **sap-btp-cloud-platform**: Use for HANA Cloud operations, BTP integration, and cloud instance management
 - **sap-abap-cds**: Use for comparing CDS syntax between CAP and ABAP or understanding HANA CDS features
 - **sap-datasphere**: Use when working with SAP Datasphere integration or data warehousing scenarios
+- **sap-dependency-security**: Use for secure dependency upgrades, exact MCP server pins, npm package hardening, lockfile linting, and cooldown policy when projects include hana-cli dependencies
 
 A developer-centric command-line interface for SAP HANA database development, particularly useful in non-SAP tooling environments like VS Code.
 
@@ -72,6 +76,8 @@ hana-cli connectViaServiceKey
 The hana-mcp-server integration enables natural language database operations through Claude's Model Context Protocol. Use conversational queries alongside traditional CLI commands for a complete development workflow.
 
 ### Setup
+
+The bundled MCP config pins `hana-mcp-server@0.3.1`. Use **sap-dependency-security** before changing this pin because the server receives HANA tenant connection environment variables.
 
 #### 1. Environment Variables
 Required configuration (add to ~/.zshrc, ~/.bashrc, or project .env):
@@ -363,11 +369,13 @@ hana-cli inspectUser
 ### Reference Documentation
 - `references/command-reference.md` - Complete command reference with all options
 - `references/abap-programming.md` - ABAP-specific programming patterns
-- `references/quick-start.md` - Quick start guide and examples
+- `references/development-environment.md` - Development setup and environment guidance
+- `references/connection-security.md` - Secure connection and credential handling
+- `references/troubleshooting.md` - Common errors and recovery steps
 
-### Scripts
-- `scripts/hana-setup.sh` - HANA development environment setup script
-- `scripts/migration-helper.sh` - Migration helper script for existing projects
+### Templates
+- `templates/default-env.json` - Local connection template for CAP-style bindings
+- `templates/cdsrc-private.json` - CAP private configuration template
 
 ## Resources
 

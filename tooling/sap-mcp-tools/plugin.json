@@ -1,7 +1,7 @@
 {
   "name": "sap-mcp-tools",
-  "version": "1.0.0",
-  "description": "Guia experta de las 196 tools MCP de @mcp-abap-adt/core para operar SAP S/4HANA via ADT. Workflows de deploy, profiling, unit testing, transports, syntax check, y troubleshooting.",
+  "version": "1.1.0",
+  "description": "Guia experta de las ~215 tools MCP de @mcp-abap-adt/core v8.13.0 para operar SAP S/4HANA via ADT. Workflows de deploy, profiling, unit testing, transports, syntax check, message class, function include, y troubleshooting.",
   "keywords": [
     "mcp",
     "adt",
@@ -78,7 +78,15 @@
     "deploy order",
     "activation order",
     "save operation error",
-    "lock error"
+    "lock error",
+    "message class",
+    "msag",
+    "t100",
+    "function include",
+    "version history",
+    "version diff",
+    "structures list",
+    "ddl"
   ],
   "category": "tooling"
 }

@@ -21,7 +21,9 @@ Guide for integrating Apache ECharts library with SAP Analytics Cloud custom wid
 
 Apache ECharts is a powerful charting library that can be integrated into SAC custom widgets to create advanced visualizations not available in standard SAC charts.
 
-**ECharts CDN**: `[https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js`](https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js`)
+**ECharts CDN**: `https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js`
+
+For `/widget-generate` enterprise/offline packages and browser design runtime previews, do not assume this public CDN is available. Copy ECharts to a local `vendor/echarts.min.js` file or use a trusted hosted URL only after explicit deployment approval.
 
 **Key Benefits**:
 - 20+ chart types (sankey, treemap, sunburst, radar, etc.)
@@ -85,8 +87,9 @@ Apache ECharts is a powerful charting library that can be integrated into SAC cu
 
 ```javascript
 (function() {
-  // Load ECharts library
-  const ECHARTS_CDN = "[https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";](https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";)
+  // General hand-written example: load ECharts library from a hosted URL.
+  // Generated/offline packages should prefer vendor/echarts.min.js instead.
+  const ECHARTS_CDN = "https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";
 
   const template = document.createElement("template");
   template.innerHTML = `
@@ -338,7 +341,7 @@ Integrate with SAC data models via data binding.
 
 ```javascript
 (function() {
-  const ECHARTS_CDN = "[https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";](https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";)
+  const ECHARTS_CDN = "https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";
 
   const template = document.createElement("template");
   template.innerHTML = `

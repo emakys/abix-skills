@@ -2,7 +2,7 @@
 
 Complete reference for SAP AI Core Generative AI Hub.
 
-**Documentation Source:** [https://github.com/SAP-docs/sap-artificial-intelligence/tree/main/docs/sap-ai-core](https://github.com/SAP-docs/sap-artificial-intelligence/tree/main/docs/sap-ai-core)
+**Documentation Source:** [SAP Help Portal - SAP AI Core](https://help.sap.com/docs/sap-ai-core)
 
 ---
 
@@ -10,12 +10,15 @@ Complete reference for SAP AI Core Generative AI Hub.
 
 The Generative AI Hub integrates large language models (LLMs) into SAP AI Core and SAP AI Launchpad, providing unified access to models from multiple providers.
 
+**Model availability note:** SAP AI Core model IDs, versions, regions, and deprecation dates change by tenant, service plan, entitlement, and SAP Note 3437766 updates. Treat model names in this reference as examples. Before creating deployments, verify the exact target catalog in SAP AI Launchpad Model Library or with `GET /v2/lm/scenarios/foundation-models/models`.
+
 ### Key Features
 
-- Access to LLMs from 6 providers via unified API
+- Access to LLMs from multiple providers via unified API
 - Harmonized API for model switching without code changes
 - Prompt experimentation in AI Launchpad UI
-- Orchestration workflows with filtering, masking, grounding
+- Prompt Registry for prompt template lifecycle management (available since Q1 2026)
+- Orchestration workflows with filtering, masking, grounding, translation
 - Token-based metering and billing
 
 ### Prerequisites
@@ -43,23 +46,24 @@ Two scenarios provide generative AI access:
 
 Access to OpenAI models via Azure's private instance.
 
-**Models:**
-- GPT-4o, GPT-4o-mini
-- GPT-4 Turbo, GPT-4
-- GPT-3.5 Turbo
-- text-embedding-3-large, text-embedding-3-small
+**Example model families to verify in tenant catalog:**
+- GPT-family chat and multimodal models
+- Reasoning model families
+- Realtime conversational models, where enabled
+- Text embedding models
 
-**Capabilities:** Chat, embeddings, vision
+**Deprecated/retiring patterns:** older GPT-4, GPT-4 Turbo, GPT-4-32k, and GPT-3.5-era deployments should be checked against SAP Note 3437766 and migrated before retirement dates shown in the tenant catalog.
+
+**Capabilities:** Chat, embeddings, vision, reasoning, realtime
 
 ### 2. SAP-Hosted Open Source (`aicore-opensource`)
 
 SAP-hosted open source models via OpenAI-compatible API.
 
-**Models:**
-- Llama 3.1 (8B, 70B, 405B)
-- Llama 3.2 (1B, 3B, 11B-Vision, 90B-Vision)
-- Mistral 7B, Mixtral 8x7B
-- Falcon 40B
+**Example model families to verify in tenant catalog:**
+- Llama-family chat and vision models
+- Mistral/Mixtral-family instruction models
+- Falcon-family models
 
 **Capabilities:** Chat, embeddings, vision (select models)
 
@@ -67,23 +71,23 @@ SAP-hosted open source models via OpenAI-compatible API.
 
 Access to Google's AI models.
 
-**Models:**
-- Gemini 1.5 Pro, Gemini 1.5 Flash
-- Gemini 1.0 Pro
-- PaLM 2 (text-bison, chat-bison)
-- text-embedding-004
+**Example model families to verify in tenant catalog:**
+- Gemini-family chat, vision, code, and long-context models
+- Gemini Flash-family lower-latency models
+- Google embedding models
 
-**Capabilities:** Chat, embeddings, vision, code
+**Deprecated/retiring patterns:** older Gemini and PaLM-era deployments should be checked against SAP Note 3437766 and migrated before retirement dates shown in the tenant catalog.
+
+**Capabilities:** Chat, embeddings, vision, code, image generation
 
 ### 4. AWS Bedrock (`aws-bedrock`)
 
 Access to models via AWS Bedrock.
 
-**Models:**
-- Anthropic Claude 3.5 Sonnet, Claude 3 Opus/Sonnet/Haiku
-- Amazon Titan Text, Titan Embeddings
-- Meta Llama 3
-- Cohere Command
+**Example model families to verify in tenant catalog:**
+- Anthropic Claude-family chat models
+- Amazon Nova-family models
+- Amazon Titan text and embedding models
 
 **Capabilities:** Chat, embeddings
 
@@ -104,11 +108,23 @@ SAP-hosted Mistral models.
 
 SAP-hosted IBM models.
 
-**Models:**
-- Granite 13B Chat, Granite 13B Instruct
-- Granite Code
+**Example model families to verify in tenant catalog:**
+- Granite chat/instruct models
+- Granite code models
 
 **Capabilities:** Chat, code
+
+### 7. Perplexity (`aicore-perplexity`)
+
+Perplexity AI models accessed through SAP AI Core where enabled for the tenant.
+
+**Example model families to verify in tenant catalog:**
+- Sonar-family web-grounded chat models
+- Deep-research models with citations, where enabled
+
+**Capabilities:** Chat with citations, web-grounded responses
+
+**Note:** Sonar and Sonar Pro models support an output-with-citations feature in orchestration, returning source URLs alongside responses.
 
 ---
 
@@ -430,14 +446,18 @@ Submit support ticket:
 
 ### Model Selection
 
-| Use Case | Recommended Model |
-|----------|-------------------|
-| General chat | GPT-4o, Claude 3.5 Sonnet |
-| Cost-sensitive | GPT-4o-mini, Mistral Small |
-| Long context | GPT-4o (128K), Claude 3 (200K) |
-| Embeddings | text-embedding-3-large |
-| Code | Codestral, GPT-4o |
-| Vision | GPT-4o, Gemini 1.5 Pro |
+| Use Case | Selection Guidance |
+|----------|--------------------|
+| General chat | Use the tenant-approved flagship chat model with enterprise data handling enabled. |
+| Cost-sensitive | Prefer smaller or mini/nano variants shown in the tenant catalog. |
+| Long context | Choose catalog entries with the required context window and verify token cost. |
+| Embeddings | Use the approved embedding model for the target vector store and language coverage. |
+| Code | Prefer code-capable catalog entries and validate output with project tests. |
+| Vision | Choose multimodal catalog entries and verify image-input support. |
+| Reasoning | Use reasoning-capable catalog entries only when latency/cost tradeoffs are acceptable. |
+| Citations / web-grounded | Use citation-capable models where enabled and preserve returned source URLs. |
+| Deep research | Use deep-research models where enabled and validate citation quality. |
+| Realtime | Use realtime catalog entries only after confirming endpoint and quota support. |
 
 ### Cost Optimization
 
@@ -458,7 +478,7 @@ Submit support ticket:
 
 ## Documentation Links
 
-- Generative AI Hub: [https://github.com/SAP-docs/sap-artificial-intelligence/blob/main/docs/sap-ai-core/generative-ai-hub-7db524e.md](https://github.com/SAP-docs/sap-artificial-intelligence/blob/main/docs/sap-ai-core/generative-ai-hub-7db524e.md)
-- Supported Models: [https://github.com/SAP-docs/sap-artificial-intelligence/blob/main/docs/sap-ai-core/supported-models-509e588.md](https://github.com/SAP-docs/sap-artificial-intelligence/blob/main/docs/sap-ai-core/supported-models-509e588.md)
+- Generative AI Hub: [https://help.sap.com/docs/sap-ai-core/generative-ai/generative-ai-hub](https://help.sap.com/docs/sap-ai-core/generative-ai/generative-ai-hub)
+- Supported Models: [https://help.sap.com/docs/sap-ai-core/generative-ai/supported-models](https://help.sap.com/docs/sap-ai-core/generative-ai/supported-models)
 - SAP Note 3437766: Token rates, limits, deprecation
 - SAP Discovery Center: [https://discovery-center.cloud.sap/serviceCatalog/sap-ai-core](https://discovery-center.cloud.sap/serviceCatalog/sap-ai-core)

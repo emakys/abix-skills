@@ -1,25 +1,40 @@
 ---
 name: sap-sac-scripting
 description: |
-  Comprehensive SAC scripting skill for SAP Analytics Cloud Analytics Designer and Optimized Story Experience. This skill should be used when the user asks to "create SAC script", "debug Analytics Designer", "optimize SAC performance", "planning operations in SAC", "filter data in SAC", "use DataSource API", "chart scripting", "table manipulation", "SAC event handlers", "version management", "data locking", "Optimized Story Experience API", "OSE scripting", "OSE widget API", "OSE DataSource", "story scripting API", "OSE planning API", "OSE method", "optimized story", "SAC story scripting", "story script", "SAC scripting", or works with SAC widgets, planning models, or analytics applications.
+  Comprehensive SAC scripting skill for SAP Analytics Cloud Analytics Designer and Optimized Story Experience. This skill should be used when the user asks to "create SAC script", "debug Analytics Designer", "optimize SAC performance", "planning operations in SAC", "filter data in SAC", "use DataSource API", "chart scripting", "table manipulation", "SAC event handlers", "version management", "data locking", "Optimized Story Experience API", "OSE scripting", "OSE widget API", "OSE DataSource", "story scripting API", "OSE planning API", "OSE method", "optimized story", "SAC story scripting", "story script", "SAC scripting", "debug SAC runtime in Microsoft Edge via CDP", or works with SAC widgets, planning models, or analytics applications.
 license: GPL-3.0
 metadata:
-  version: 3.0.1
-  last_verified: 2026-03-07
-  sac_version: "Q1 2026 (2026.2)"
-  api_reference_version: "2025.14 (OSE Q1 2026)"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
+  last_verified: 2026-06-11
+  sac_version: "Q2 2026 (2026.8)"
+  api_reference_version: "2025.20 (OSE Q2 2026)"
   documentation_source: https://help.sap.com/docs/SAP_ANALYTICS_CLOUD
-  reference_files: 63
+  reference_files: 66
   template_patterns: 56
   agents: 4
   commands: 4
-  status: production
-  known_issues: []
+  status: docs_audited_runtime_pending
+  known_issues:
+    - Live SAC story/runtime checks require tenant evidence before claiming production validation.
 ---
 
 # SAP Analytics Cloud Scripting
 
+## Related Skills
+
+- **sap-dependency-security**: Use when securing dependency, SDK/tooling, and source-pinned SAC MCP upgrades used in story automation pipelines
+- **sap-browser-automation**: Use for in-app manual authentication, consent-gated Edge profile reuse, fresh Edge/CDP startup, auth-state bootstrap, and browser recovery
+
+## When to Use This Skill
+
+Use this skill when writing or debugging SAC Analytics Designer scripts, Optimized Story Experience scripts, widget APIs, data-source filtering/selection logic, planning/version scripts, export/navigation handlers, performance-sensitive story logic, or SAC MCP-assisted automation.
+
 Comprehensive skill for scripting in SAP Analytics Cloud (SAC) Analytics Designer and Optimized Story Experience.
+
+For authenticated SAC browser runtime inspection, use `sap-browser-automation` for manual in-app authentication, consent-gated Edge profile reuse, fresh Edge/CDP startup, auth-state bootstrap, and recovery. Load local `references/edge-cdp-control.md` for SAC scripting-specific boundaries. Use CDP for local runtime triage, widget-state checks, and approved screenshots; do not touch unrelated tabs.
 
 ## Getting Started
 
@@ -29,7 +44,7 @@ When the user invokes this skill with no specific task (e.g. "help with SAC scri
 >
 > First, which environment are you working in?
 > 1. **Analytics Designer** — application-based scripting, full API
-> 2. **Optimized Story Experience** — story-based scripting, OSE API (v2025.14)
+> 2. **Optimized Story Experience** — story-based scripting, OSE API (v2025.20)
 >
 > Then, what do you need help with?
 > - Write a new script (filter, planning, navigation, export...)
@@ -59,10 +74,12 @@ This plugin provides specialized tools for SAC development:
 
 ## MCP Setup
 
-This plugin ships with a `.mcp.json` that connects to the community `sap_analytics_cloud_mcp`
+This plugin ships with a `.mcp.json` that connects to the trusted `secondsky/sap_analytics_cloud_mcp`
 server, exposing 90 SAC REST API tools across 11 service areas (Content, Data Export, Data Import,
 Multi Actions, Calendar, Content Transport, User Management, Monitoring, Schedule & Publication,
 Translation, Smart Query).
+
+The SAC MCP is source-installed, not npm-installed. Use **sap-dependency-security** before changing the trusted fork or commit pin because this server receives SAC OAuth credentials and exposes tenant API tools.
 
 **Before using MCP tools**, check if the server is already installed:
 - Look for `.claude/sac-mcp.local.md` in the project
@@ -75,11 +92,15 @@ If not installed, ask the user once: **"Would you like help setting up the SAC M
 1. Clone and build:
    ```bash
    git clone https://github.com/secondsky/sap_analytics_cloud_mcp
-   cd sap_analytics_cloud_mcp && npm install && npm run build
+   cd sap_analytics_cloud_mcp
+   git checkout 2020235505d98111c2889598ab2217c1619b6943
+   npm ci --ignore-scripts
+   npm run build
    ```
 
 2. Configure environment variables:
    - `SAC_MCP_PATH` — absolute path to the cloned repo (e.g. `/home/user/sap_analytics_cloud_mcp`)
+   - `SAC_MCP_COMMIT` — `2020235505d98111c2889598ab2217c1619b6943`
    - `SAC_BASE_URL` — SAC tenant root URL (e.g. `https://mytenant.eu10.hanacloudservices.cloud.sap`)
    - `SAC_TOKEN_URL` — OAuth token endpoint
    - `SAC_CLIENT_ID` / `SAC_CLIENT_SECRET` — from SAC OAuth client configuration
@@ -88,22 +109,27 @@ If not installed, ask the user once: **"Would you like help setting up the SAC M
    ```markdown
    # SAC MCP Installation Record
    - Installed: [date]
+   - Repository: https://github.com/secondsky/sap_analytics_cloud_mcp
+   - Commit: 2020235505d98111c2889598ab2217c1619b6943
    - Path: [absolute path to build/index.js]
-   - Env vars configured: SAC_MCP_PATH, SAC_BASE_URL, SAC_TOKEN_URL, SAC_CLIENT_ID, SAC_CLIENT_SECRET
+   - Build command: npm ci --ignore-scripts && npm run build
+   - Env vars configured: SAC_MCP_PATH, SAC_MCP_COMMIT, SAC_BASE_URL, SAC_TOKEN_URL, SAC_CLIENT_ID, SAC_CLIENT_SECRET
    ```
 
 This prevents re-prompting in future sessions.
 
-## What's New in Q1 2026 (2026.2)
+## What's New in Q2 2026 (2026.8)
 
 Key scripting enhancements in the latest SAC release:
-- **Chart Variance APIs** - Script control over chart variance display
-- **Compass for Seamless Planning** - Enhanced planning integration
-- **Data Actions Enhancements** - Automatic dimension mapping, input control binding
-- **Time Series Forecast API** - Programmatic forecasting control
-- **Comments APIs** - Widget and cell comment management
+- **Enhanced `onAfterExecute` Event** - Upload events now include message, statistics, rejected records, target version, and filename
+- **Data Export API Job Monitoring** - New job monitor tab for delta extraction and calculation jobs
+- **Data Import Service API** - Import master data to public dimensions in SAP Datasphere; import external fact data to private versions
+- **Multi-Action API Step** - HTTP 204 response now allowed; enhanced header field restrictions
+- **Export to S/4HANA Deprecated** - Use write-back integration scenario instead
+- **Asymmetric Reporting** - Differing time ranges, hierarchies, and measures per row/column
+- **Composite Versioning** - Manage multiple composite versions during story design
 
-See `references/whats-new-q1-2026.md` for complete details.
+See `references/whats-new-qrc2-2026.md` for complete details.
 
 ## Environment Detection
 
@@ -124,8 +150,55 @@ Before writing or analyzing any script, identify which SAC environment the user 
 Do not ask again after the user answers.
 
 **After confirmation**, use the correct references:
-- **OSE** → `references/ose-api-*.md` (8 files, Q1 2026, v2025.14)
+- **OSE** → `references/ose-api-*.md` (8 files, Q2 2026, v2025.20)
 - **Analytics Designer** → `references/api-*.md` (existing files)
+
+## Reporting Story Workflow
+
+Use this workflow for read-only SAC stories, dashboards, and management reports. It is separate from planning: route writeback, version publishing, data actions, allocations, data locking, and other planning operations to `sap-sac-planning`.
+
+1. **Establish the contract**: identify the tenant, story, data source, intended audience, and whether the user forbids model changes. Treat a reporting-only request as story-layer work unless the user explicitly authorizes a broader scope.
+2. **Inspect actual metadata**: confirm the selected model and use only its exposed dimensions, measures, hierarchies, time fields, currencies, and comparison categories. Never invent a field because it would be useful for a proposed chart or KPI.
+3. **Design at the story layer**: define pages, widgets, filters, selections, navigation, and supported story calculations. Label comparisons explicitly as actual-versus-budget, forecast, or another available category.
+4. **Implement safely**: before saving, verify that the current SAC area is Story Designer rather than Modeler. Keep common filters and dependent-widget interactions read-only and non-destructive.
+5. **Verify or hand off**: validate page and widget readiness with `sap-sac-test-automation`. If authenticated tenant control is unavailable, follow `sap-browser-automation` and the local `references/edge-cdp-control.md` recovery path. If access still fails, do not claim that the story was created; provide the complete story specification for manual execution or a later connected session.
+
+### Read-Only Story Contract
+
+When the model must not change, the following are allowed:
+
+- create or edit story pages, charts, tables, KPI cards, filters, navigation, and story-layer calculations supported by SAC;
+- rename story objects and save the story;
+- inspect model metadata and perform read-only validation.
+
+The following are forbidden without explicit scope and approval:
+
+- editing model dimensions, measures, properties, connections, calendars, allocations, or settings;
+- creating model-level calculated measures or changing master data, roles, or permissions;
+- publishing planning versions, executing data actions, changing locks, or writing back planning data.
+
+If a required field or measure is not exposed by the model, omit the dependent widget and record the omission. Do not change the model to make the design fit.
+
+### Implementation-Ready Handoff
+
+When tenant interaction is blocked, return a usable specification containing:
+
+- story purpose, audience, data source, and confirmed model metadata;
+- page-by-page widgets using only resolved fields;
+- filters, comparison semantics, selections, and drilldowns;
+- omitted widgets or unresolved fields with the reason for each;
+- read-only safety constraints and the verification evidence still required.
+
+## Large Reference Search Routing
+
+Search large OSE API references with `rg` before opening them. Use patterns such as `rg -n "class Chart|interface DataSource|enum Feed|setDimensionFilter|getPlanning|PlanningModel" references/ose-api-*.md`, then read only the matching section.
+
+- Use `references/ose-api-datasource.md` for DataSource, DataAction, DataBinding, DataLocking, DataChangeInsights, and result-set methods.
+- Use `references/ose-api-chart-viz.md` for Chart, Table, GeoMap, RVisualization, ValueDriverTree, feeds, and visualization APIs.
+- Use `references/ose-api-planning-calendar.md` for Planning, PlanningModel, versions, calendars, data actions, and planning workflows.
+- Use `references/ose-api-application-core.md` for Application, PageBook, Panel, Popup, Widget, and lifecycle or container APIs.
+- Use `references/ose-api-types-enums.md` for enum/type lookup when a method signature mentions `Feed`, `Layout`, `NumberFormat`, `VariableValue`, or other SAC-specific types.
+- Use smaller `references/api-*.md` files first for Analytics Designer unless the user explicitly says Optimized Story Experience.
 
 ## Quick Start
 
@@ -209,13 +282,14 @@ console.log("Selections:", JSON.stringify(Chart_1.getSelections()));
 
 ## Bundled Resources
 
-**Reference Files** (63 files):
+**Reference Files** (66 files):
 - Core APIs: `references/api-datasource.md`, `references/api-widgets.md`, `references/api-planning.md`
 - Advanced: `references/api-calendar-bookmarks.md`, `references/api-advanced-widgets.md`
 - Best Practices: `references/best-practices-developer.md`, `references/best-practices-planning-stories.md`
 - Language: `references/scripting-language-fundamentals.md`
-- Q1 2026: `references/whats-new-q1-2026.md`, `references/chart-variance-apis.md`
-- **OSE API (Q1 2026, v2025.14)** — complete method/parameter/return documentation:
+- Q2 2026-relevant API updates: `references/whats-new-qrc2-2026.md`, `references/whats-new-2025.23.md`, `references/chart-variance-apis.md`
+- Browser runtime triage: `references/edge-cdp-control.md` for SAC-specific boundaries; use shared `sap-browser-automation` for authentication, Edge/CDP setup, `DevToolsActivePort`, target selection, and recovery
+- **OSE API (Q2 2026, v2025.20)** — complete method/parameter/return documentation:
   - `references/ose-api-application-core.md` — Application, PageBook, Panel, Popup, Widget (15 classes)
   - `references/ose-api-widgets.md` — Button, Dropdown, InputField, Slider, Switch, Text, TextArea (15 classes)
   - `references/ose-api-datasource.md` — DataSource, DataAction, DataBinding, DataLocking, DataChangeInsights (39 classes)
@@ -238,4 +312,4 @@ console.log("Selections:", JSON.stringify(Chart_1.getSelections()));
 
 ---
 
-**Version**: 3.0.1 | **Last Verified**: 2026-03-07 | **SAC Version**: Q1 2026 (2026.2) | **API Version**: 2025.14
+**SAC Version**: Q2 2026 (2026.8) | **API Version**: 2025.20 (OSE Q2 2026)

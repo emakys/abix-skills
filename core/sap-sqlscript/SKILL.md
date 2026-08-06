@@ -1,20 +1,29 @@
 ---
 name: sap-sqlscript
 description: |
-  This skill should be used when the user asks to "write a SQLScript procedure", "create HANA stored procedure", "implement AMDP method", "optimize SQLScript performance", "handle SQLScript exceptions", "debug HANA procedure", "create table function", or mentions SQLScript, SAP HANA procedures, AMDP, EXIT HANDLER, or code-to-data paradigm.
+  This skill should be used when the user asks to "write a SQLScript procedure", "create HANA stored procedure", "implement AMDP method", "optimize SQLScript performance", "handle SQLScript exceptions", "debug HANA procedure", "create table function", "inspect a browser-based Datasphere SQL editor with Microsoft Edge CDP", or mentions SQLScript, SAP HANA procedures, AMDP, EXIT HANDLER, or code-to-data paradigm.
 
   Comprehensive SQLScript development guidance for SAP HANA database programming including syntax patterns, built-in functions, exception handling, performance optimization, cursor management, and ABAP Managed Database Procedure (AMDP) integration.
 license: GPL-3.0
 metadata:
-  version: "2.1.0"
-  last_verified: "2025-12-27"
-  production_tested: "Yes, referenced in SAP Community projects"
-  sap_hana_version: "2.0 SPS07"
-  hana_cloud_version: "QRC 3/2025"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
+  last_verified: "2026-05-31"
+  production_tested: "No; documentation and community references only, no live HANA runtime evidence"
+  sap_hana_version: "2.0 SPS08"
+  hana_cloud_version: "QRC 1/2026"
   errors_prevented: 15
 ---
 
 # SAP SQLScript Development Guide
+
+## When to Use This Skill
+
+Use this skill when writing SQLScript procedures, anonymous blocks, table/scalar functions, AMDP methods, exception handlers, cursor logic, bulk operations, or HANA performance-sensitive database logic that should run close to the data.
+
+For browser-based Datasphere or HANA Cloud SQL editor triage, use `sap-browser-automation` for manual in-app authentication, consent-gated Edge profile reuse, fresh Edge/CDP startup, auth-state bootstrap, and recovery. Load local `references/edge-cdp-control.md` for SQLScript-specific boundaries. Use CDP only for local UI inspection, console diagnostics, deployment messages, and approved screenshots; default database validation still belongs in SQL/HANA tooling.
 
 ## Overview
 
@@ -566,6 +575,7 @@ For comprehensive SAP development, combine this skill with:
 - `references/performance-guide.md` - Optimization techniques
 - `references/advanced-features.md` - Lateral joins, JSON, query hints, currency conversion
 - `references/troubleshooting.md` - Common errors and solutions
+- `references/edge-cdp-control.md` - SQLScript-specific add-on for the shared `sap-browser-automation` Edge/CDP and authentication layer
 
 ### Production-Ready Templates
 Copy and customize these templates for common patterns:

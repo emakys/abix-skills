@@ -1,12 +1,15 @@
 ---
 name: sap-btp-best-practices
 description: |
-  Production-ready SAP BTP best practices for enterprise architecture, account management, security, and operations. Use when planning BTP implementations, setting up account hierarchies, configuring environments, implementing authentication, designing CI/CD pipelines, establishing governance, building Platform Engineering teams, implementing failover strategies, or managing application lifecycle on SAP BTP.
+  SAP BTP best practices for enterprise architecture, account management, security, and operations, with verification evidence tracked in the repository ledger. Use when planning BTP implementations, setting up account hierarchies, configuring environments, implementing authentication, designing CI/CD pipelines, establishing governance, building Platform Engineering teams, implementing failover strategies, or managing application lifecycle on SAP BTP.
 
   Keywords: SAP BTP, account hierarchy, global account, directory, subaccount, Cloud Foundry, Kyma, ABAP, SAP Identity Authentication, CI/CD, governance, Platform Engineering, failover, multi-region, SAP BTP best practices
 license: GPL-3.0
 metadata:
-  version: "1.3.0"
+  maintainer: "Eduard Jiglau"
+  maintainer_email: "hello@sap-ai-skills.com"
+  website: "https://sap-ai-skills.com"
+  version: "2.4.0"
   last_verified: "2025-11-27"
 ---
 
@@ -19,9 +22,23 @@ metadata:
 - **sap-btp-service-manager**: Use for service lifecycle management and programmatic service operations
 - **sap-btp-developer-guide**: Use for development workflows, CAP integration, and application patterns
 - **sap-cap-capire**: Use when designing CAP applications on BTP or implementing multitenancy
+- **sap-ai-core**: Use for AI Core platform setup, model deployment, and orchestration configuration
+- **sap-cloud-sdk-ai**: Use for SDK-level AI integration in CAP or standalone BTP applications
 - **sap-fiori-tools**: Use for UI deployment strategies and frontend application guidelines
 
-Production-ready SAP BTP implementation guidance based on official SAP documentation.
+## When to Use This Skill
+
+Use this skill when designing a BTP account model, setting up governance, choosing commercial/environment patterns, establishing security and authentication defaults, designing CI/CD and operations practices, or reviewing a BTP landscape before implementation.
+
+## Quick Start
+
+1. Identify the target account model: global account, directories, subaccounts, environments, and regions.
+2. Choose the runtime path: Cloud Foundry, Kyma, ABAP Environment, or a hybrid portfolio.
+3. Apply security defaults from [Security and Authentication](#security-and-authentication).
+4. Use the relevant implementation skill for detailed execution: `sap-btp-cloud-platform`, `sap-btp-connectivity`, `sap-btp-service-manager`, `sap-cap-capire`, or `sap-fiori-tools`.
+5. Record production-specific gaps in the project plan before changing `last_verified`.
+
+Documentation-audited SAP BTP implementation guidance based on official SAP documentation. The `last_verified` date remains stale until the source refresh and any live account checks are completed.
 
 **Quick Links**:
 - **Official Guide**: [https://github.com/SAP-docs/btp-best-practices-guide](https://github.com/SAP-docs/btp-best-practices-guide)
@@ -244,7 +261,16 @@ SAP BTP provides AI capabilities through **SAP AI Core** for:
 
 **Use Cases**: 20+ samples including chatbots, PDF extraction, procurement.
 
-**See**: `references/ai-development-best-practices.md` for patterns and examples
+**CAP + AI Integration Patterns**:
+- Use SAP Cloud SDK for AI (`@sap-ai-sdk/orchestration`) inside CAP event handlers — never raw HTTP calls to LLM providers
+- Bind AI Core service instance to CAP app via MTA (plan: `extended`) — credentials are managed by BTP, not in code
+- Always process LLM calls asynchronously in production: return `202 Accepted`, process in background via `cds.spawn`. LLM responses can take 30-60 seconds, exceeding BTP load balancer timeouts
+- Externalize prompts into JSON files or CDS entities so they can be updated without redeployment
+- Use HANA Cloud `Vector(1536)` type in CDS entities for RAG scenarios with the HANA Vector Engine
+- Allocate at least **512MB** memory for Node.js containers processing large text payloads with the AI SDK
+- Implement resilience: validate LLM outputs before writing to the database (prevent injection attacks), cache frequent responses for cost control
+
+**See**: `references/ai-development-best-practices.md` for patterns and examples. For CAP-specific code patterns, see **sap-cap-capire** skill. For SDK integration, see **sap-cloud-sdk-ai** skill.
 
 ---
 
@@ -442,6 +468,6 @@ This skill provides comprehensive reference documentation:
 
 ---
 
-**Last Updated**: 2025-11-27
+**Last Updated**: 2026-06-16
 **Review Progress**: See SAP_SKILLS_REVIEW_PROGRESS.md
-**Next Review**: 2026-02-27 (quarterly)
+**Next Review**: Source refresh pending; do not advance `last_verified` without primary-source evidence.
