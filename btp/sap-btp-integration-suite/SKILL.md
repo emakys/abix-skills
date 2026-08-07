@@ -107,6 +107,8 @@ Streamline B2B relationships with partner profiles, agreement templates, and aut
 
 When a user asks to generate an iFlow package, ZIP, importable archive, `.iflw`, or complete Cloud Integration artifact, use `references/iflow-package-authoring.md` before writing files. Do not invent a flat XML-only package.
 
+When a user asks to read, deploy, compare, or monitor tenant content programmatically (CI/CD, drift detection, message logs), use `references/odata-api.md` — it documents the Integration Content OData API (`/api/v1`), which the rest of the references do not cover.
+
 For HTTPS-to-SFTP scenarios, start from `templates/https-to-sftp-iflow-package/` and preserve its directory layout:
 
 ```
@@ -322,6 +324,7 @@ Detailed guides available in `references/` directory:
 - `scripting.md` - Groovy/JavaScript patterns, APIs, and templates
 - `api-management.md` - API proxy development, 34 policies, Developer Hub
 - `security.md` - Authentication, keystores, certificates, credentials
+- `odata-api.md` - Integration Content OData API (`/api/v1`): read/deploy tenant content programmatically
 
 **Capabilities**:
 - `edge-integration-cell.md` - Hybrid Kubernetes deployment guide
