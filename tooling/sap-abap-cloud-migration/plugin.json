@@ -1,0 +1,40 @@
+{
+  "name": "sap-abap-cloud-migration",
+  "description": "Migración de código ABAP clásico hacia niveles clean core más altos: eliminar Nivel D, minimizar Nivel C y apuntar a Nivel A. Cubre adaptación de código custom, identificación de APIs liberadas y clásicas de reemplazo, generación de clases wrapper para objetos no liberados, checks ATC de clean core y cloud readiness, changelog de objetos SAP, y flujos de remediación paso a paso.",
+  "version": "1.0.0",
+  "author": {
+    "name": "likweitan/abap-skills",
+    "email": "https://github.com/likweitan/abap-skills"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/likweitan/abap-skills",
+  "keywords": [
+    "migrar a abap cloud",
+    "migración a abap cloud",
+    "abap cloud migration",
+    "custom code migration",
+    "migración de código custom",
+    "cloud readiness",
+    "remediación",
+    "remediation",
+    "clase wrapper",
+    "wrapper class",
+    "patrón wrapper",
+    "api no liberada",
+    "non-released api",
+    "objeto no liberado",
+    "eliminar nivel d",
+    "reducir nivel c",
+    "adaptación de código",
+    "code adaptation",
+    "changelog for sap objects",
+    "renovate",
+    "side-by-side",
+    "código custom",
+    "codigo custom",
+    "custom code",
+    "migrar código",
+    "migrar codigo"
+  ],
+  "category": "tooling"
+}

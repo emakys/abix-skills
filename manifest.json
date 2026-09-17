@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
-  "updated": "2026-08-06T00:00:00Z",
+  "version": "1.5.0",
+  "updated": "2026-09-17T00:00:00Z",
   "repo": "abix-skills",
   "skills": [
     {
@@ -519,6 +519,50 @@
       "plan": "personal+",
       "path": "functional/sap-re-fx-real-estate",
       "color": "#65a30d"
+    },
+    {
+      "id": "sap-badi-enhancement",
+      "name": "sap-badi-enhancement",
+      "description": "BAdIs y framework de ampliaciones de ABAP: BAdIs nuevos y clásicos, clases fallback, BAdIs con filtro, enhancement spots e implementaciones, key user extensibility, y la clasificación por nivel clean core (A-D) de cada técnica de ampliación. Úsala para encontrar o crear un BAdI, extender el estándar SAP sin modificarlo, reemplazar una modificación o una ampliación implícita, o decidir qué técnica de ampliación está permitida.",
+      "version": "1.0.0",
+      "category": "tooling",
+      "tier": "essential",
+      "plan": "personal",
+      "path": "tooling/sap-badi-enhancement",
+      "color": "#facc15"
+    },
+    {
+      "id": "sap-abap-cloud",
+      "name": "sap-abap-cloud",
+      "description": "Modelo de niveles clean core (A, B, C, D) de SAP: definición de cada nivel, qué objetos SAP los determinan, modelos de desarrollo ABAP Cloud vs ABAP clásico, extensibilidad on-stack, side-by-side y del key user, contratos de estabilidad de las APIs liberadas, y clasificación de wrappers. Skill de referencia de los niveles — consúltala cuando haga falta decidir o justificar en qué nivel cae una extensión.",
+      "version": "1.0.0",
+      "category": "tooling",
+      "tier": "recommended",
+      "plan": "personal",
+      "path": "tooling/sap-abap-cloud",
+      "color": "#155e75"
+    },
+    {
+      "id": "sap-abap-cloud-migration",
+      "name": "sap-abap-cloud-migration",
+      "description": "Migración de código ABAP clásico hacia niveles clean core más altos: eliminar Nivel D, minimizar Nivel C y apuntar a Nivel A. Cubre adaptación de código custom, identificación de APIs liberadas y clásicas de reemplazo, generación de clases wrapper para objetos no liberados, checks ATC de clean core y cloud readiness, changelog de objetos SAP, y flujos de remediación paso a paso.",
+      "version": "1.0.0",
+      "category": "tooling",
+      "tier": "recommended",
+      "plan": "personal",
+      "path": "tooling/sap-abap-cloud-migration",
+      "color": "#0891b2"
+    },
+    {
+      "id": "sap-atc-cloudification",
+      "name": "sap-atc-cloudification",
+      "description": "Configuración de los checks de ATC de clean core y cloud readiness contra el SAP Cloudification Repository, y mapeo de hallazgos ATC a niveles clean core (A, B, C, D). Cubre variantes de verificación, URLs de los JSON por producto y versión, exenciones ATC, clasificación released/classic/internal/noAPI, y qué SAP Notes hacen falta.",
+      "version": "1.0.0",
+      "category": "tooling",
+      "tier": "specialized",
+      "plan": "personal",
+      "path": "tooling/sap-atc-cloudification",
+      "color": "#a5f3fc"
     }
   ]
 }

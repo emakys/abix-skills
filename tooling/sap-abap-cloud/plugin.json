@@ -1,0 +1,36 @@
+{
+  "name": "sap-abap-cloud",
+  "description": "Modelo de niveles clean core (A, B, C, D) de SAP: definición de cada nivel, qué objetos SAP los determinan, modelos de desarrollo ABAP Cloud vs ABAP clásico, extensibilidad on-stack, side-by-side y del key user, contratos de estabilidad de las APIs liberadas, y clasificación de wrappers. Skill de referencia de los niveles — consúltala cuando haga falta decidir o justificar en qué nivel cae una extensión.",
+  "version": "1.0.0",
+  "author": {
+    "name": "likweitan/abap-skills",
+    "email": "https://github.com/likweitan/abap-skills"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/likweitan/abap-skills",
+  "keywords": [
+    "clean core level",
+    "nivel clean core",
+    "niveles clean core",
+    "abap cloud",
+    "abap language version",
+    "developer extensibility",
+    "on-stack extensibility",
+    "key user extensibility",
+    "stability contract",
+    "contrato de estabilidad",
+    "api liberada",
+    "released api",
+    "classic api",
+    "api clásica",
+    "modelo de 3 tiers",
+    "tier 1",
+    "tier 2",
+    "tier 3",
+    "level a",
+    "level b",
+    "level c",
+    "level d"
+  ],
+  "category": "tooling"
+}

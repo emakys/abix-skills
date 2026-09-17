@@ -1,0 +1,36 @@
+{
+  "name": "sap-atc-cloudification",
+  "description": "Configuración de los checks de ATC de clean core y cloud readiness contra el SAP Cloudification Repository, y mapeo de hallazgos ATC a niveles clean core (A, B, C, D). Cubre variantes de verificación, URLs de los JSON por producto y versión, exenciones ATC, clasificación released/classic/internal/noAPI, y qué SAP Notes hacen falta.",
+  "version": "1.0.0",
+  "author": {
+    "name": "likweitan/abap-skills",
+    "email": "https://github.com/likweitan/abap-skills"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/likweitan/abap-skills",
+  "keywords": [
+    "atc check",
+    "checks atc",
+    "hallazgo atc",
+    "variante atc",
+    "abap test cockpit",
+    "check variant",
+    "variante de verificación",
+    "cloudification repository",
+    "objectreleaseinfo",
+    "objectclassifications",
+    "exención atc",
+    "atc exemption",
+    "sycm_usage_of_apis",
+    "abap_cloud_readiness",
+    "abap_clean_core_development",
+    "ci_search_cust_modifications",
+    "abap-atc-cr-cv-s4hc",
+    "cloud erp private",
+    "prioridad 1",
+    "priority 1 finding",
+    " atc",
+    "atc "
+  ],
+  "category": "tooling"
+}
