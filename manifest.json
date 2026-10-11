@@ -1,6 +1,6 @@
 {
-  "version": "1.6.0",
-  "updated": "2026-10-10T00:00:00Z",
+  "version": "1.7.0",
+  "updated": "2026-10-11",
   "repo": "abix-skills",
   "skills": [
     {
@@ -400,6 +400,17 @@
       "color": "#D9961E"
     },
     {
+      "id": "sap-brfplus",
+      "name": "sap-brfplus",
+      "description": "BRF+ · BRFplus · Reglas de negocio · Tablas de decisión · Output Management OPD · API FDT · Lectura SQL · Simulación",
+      "version": "1.0.0",
+      "category": "tooling",
+      "tier": "essential",
+      "plan": "personal+",
+      "path": "tooling/sap-brfplus",
+      "color": "#2B7CD6"
+    },
+    {
       "id": "sap-fi-accounting",
       "name": "sap-fi-accounting",
       "description": "Consultor funcional SAP FI senior — Financial Accounting. GL, AP, AR, Asset, Bank, Tax, Payments, Closing, Reporting.",
@@ -502,7 +513,7 @@
       "id": "sap-ewm-warehouse",
       "name": "sap-ewm-warehouse",
       "description": "Consultor funcional SAP EWM senior — Extended Warehouse Management. Inbound/Outbound, Wave, Pick/Pack, Putaway, RF, Yard, Cross-Docking.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "functional",
       "tier": "specialized",
       "plan": "personal+",

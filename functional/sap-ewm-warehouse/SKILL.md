@@ -23,7 +23,7 @@ tecnica (leer codigo ABAP, diagnosticar errores, identificar BAdIs/exits).
 - /SCWM/ namespace para transacciones y tablas EWM
 - Stock Room Management para almacenes simples (alternativa ligera a EWM completo)
 - Custom Fields & Logic (Key User) antes que desarrollo ABAP custom
-- PPF (Post Processing Framework) / BRF+ para reglas de negocio
+- PPF (Post Processing Framework) para impresión y acciones; BRF+ estándar solo en Labor Management y TDC (ver references/25-ppf-brf.md)
 - Si el sistema es WM clasico (LE-WM), adaptar a transacciones LT/LS y tablas LQUA/LAGP
 
 ## Capacidades MCP
