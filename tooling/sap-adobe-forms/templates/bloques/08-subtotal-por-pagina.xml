@@ -1,0 +1,19 @@
+<!-- Subtotal de la página actual (campo en la pageArea, sobre el pie). Suma los campos IMPORTE
+     impresos en esa página. IMPORTE debe ser numérico en los datos (no texto formateado). -->
+<field name="SubtotalPagina" x="150mm" y="276mm" w="50mm" h="5mm" access="readOnly">
+  <ui><numericEdit><border presence="hidden"/><margin/></numericEdit></ui>
+  <font typeface="Arial" size="8pt" weight="bold"/><para hAlign="right" vAlign="middle"/>
+  <format><picture>num{z,zzz,zzz,zz9.99}</picture></format>
+  <event activity="ready" ref="$layout">
+    <script contentType="application/x-javascript">
+var campos = xfa.layout.pageContent(xfa.layout.page(this) - 1, "field", false);
+var total = 0;
+for (var i = 0; i &lt; campos.length; i++) {
+  if (campos.item(i).name == "IMPORTE") { total += Number(campos.item(i).rawValue); }
+}
+this.rawValue = total;
+if (total == 0) { this.presence = "invisible"; }   // páginas sin filas (p. ej. solo el bloque final)
+    </script>
+  </event>
+  <bind match="none"/>
+</field>

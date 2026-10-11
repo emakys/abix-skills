@@ -1,0 +1,34 @@
+<!-- Página maestra A4: encabezado (logo + título + línea) y pie (línea + texto + "Página X de Y").
+     Va dentro de <pageSet>. El cuerpo fluye en el contentArea (y=28mm a y=278mm). ✅ verificado (demos 3-5). -->
+<pageArea name="Pagina" id="Pagina">
+  <contentArea x="10mm" y="28mm" w="190mm" h="250mm"/>
+  <medium stock="a4" short="210mm" long="297mm"/>
+  <draw name="Logo" x="10mm" y="8mm" w="48mm" h="12mm">
+    <value><image contentType="image/png" aspect="fit"><!-- BASE64 del logo (PNG/JPG reducido) --></image></value>
+  </draw>
+  <draw name="TituloPagina" x="110mm" y="9mm" w="90mm" h="10mm">
+    <ui><textEdit/></ui><value><text>Título del documento</text></value>
+    <font typeface="Arial" size="16pt" weight="bold"><fill><color value="43,124,214"/></fill></font>
+    <para hAlign="right" vAlign="middle"/>
+  </draw>
+  <draw name="LineaSup" x="10mm" y="22mm" w="190mm" h="1mm">
+    <value><line><edge thickness="0.8mm"><color value="217,150,30"/></edge></line></value>
+  </draw>
+  <draw name="LineaInf" x="10mm" y="281mm" w="190mm" h="1mm">
+    <value><line><edge thickness="0.3mm"><color value="43,124,214"/></edge></line></value>
+  </draw>
+  <draw name="PieTexto" x="10mm" y="283mm" w="140mm" h="6mm">
+    <ui><textEdit/></ui><value><text>Razón social · dirección · contacto</text></value>
+    <font typeface="Arial" size="7pt"><fill><color value="120,120,120"/></fill></font>
+    <para vAlign="middle"/>
+  </draw>
+  <field name="Paginacion" x="150mm" y="283mm" w="50mm" h="6mm" access="readOnly">
+    <ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+    <font typeface="Arial" size="8pt"><fill><color value="120,120,120"/></fill></font>
+    <para hAlign="right" vAlign="middle"/>
+    <event activity="ready" ref="$layout">
+      <script contentType="application/x-javascript">this.rawValue = "Página " + xfa.layout.page(this) + " de " + xfa.layout.pageCount();</script>
+    </event>
+    <bind match="none"/>
+  </field>
+</pageArea>

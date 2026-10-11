@@ -1,0 +1,33 @@
+<!-- Tabla que pasa de página con encabezado repetido (overflow leader).
+     Datos: <POSICIONES><DATA><POSNR/><DESCRIPCION/><IMPORTE/></DATA>…</POSICIONES>.
+     DESCRIPCION crece (multiLine + minH). ✅ patrón verificado. -->
+<subform name="TablaPos" layout="table" columnWidths="20mm 120mm 50mm" w="190mm">
+  <bind match="dataRef" ref="$.POSICIONES"/>
+  <subform name="TablaPos_Enc" layout="row">
+    <draw name="H_POSNR" w="20mm" h="7mm"><ui><textEdit/></ui><value><text>Pos.</text></value>
+      <font typeface="Arial" size="10pt" weight="bold"><fill><color value="255,255,255"/></fill></font>
+      <margin leftInset="1mm" rightInset="1mm"/><para hAlign="center" vAlign="middle"/>
+      <border><edge presence="hidden"/><fill><color value="217,150,30"/></fill></border></draw>
+    <draw name="H_DESCRIPCION" w="120mm" h="7mm"><ui><textEdit/></ui><value><text>Descripción</text></value>
+      <font typeface="Arial" size="10pt" weight="bold"><fill><color value="255,255,255"/></fill></font>
+      <margin leftInset="1mm" rightInset="1mm"/><para hAlign="left" vAlign="middle"/>
+      <border><edge presence="hidden"/><fill><color value="217,150,30"/></fill></border></draw>
+    <draw name="H_IMPORTE" w="50mm" h="7mm"><ui><textEdit/></ui><value><text>Importe</text></value>
+      <font typeface="Arial" size="10pt" weight="bold"><fill><color value="255,255,255"/></fill></font>
+      <margin leftInset="1mm" rightInset="1mm"/><para hAlign="right" vAlign="middle"/>
+      <border><edge presence="hidden"/><fill><color value="217,150,30"/></fill></border></draw>
+  </subform>
+  <subform name="TablaPos_Fila" layout="row">
+    <occur min="0" max="-1"/><bind match="dataRef" ref="DATA[*]"/>
+    <field name="POSNR" w="20mm" h="6mm" access="readOnly"><ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+      <font typeface="Arial" size="9pt"/><margin leftInset="1mm" rightInset="1mm"/><para hAlign="center" vAlign="middle"/>
+      <bind match="dataRef" ref="$.POSNR"/></field>
+    <field name="DESCRIPCION" w="120mm" minH="6mm" access="readOnly"><ui><textEdit multiLine="1"><border presence="hidden"/><margin/></textEdit></ui>
+      <font typeface="Arial" size="9pt"/><margin leftInset="1mm" rightInset="1mm"/><para hAlign="left" vAlign="middle"/>
+      <bind match="dataRef" ref="$.DESCRIPCION"/></field>
+    <field name="IMPORTE" w="50mm" h="6mm" access="readOnly"><ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+      <font typeface="Arial" size="9pt"/><margin leftInset="1mm" rightInset="1mm"/><para hAlign="right" vAlign="middle"/>
+      <bind match="dataRef" ref="$.IMPORTE"/></field>
+    <keep intact="contentArea"/><overflow leader="TablaPos_Enc"/>
+  </subform>
+</subform>

@@ -1,0 +1,16 @@
+<!-- Fecha y número con patrón explícito. SAP envía fechas YYYY-MM-DD: el patrón de DATOS va en <bind><picture>.
+     Si el formato depende del usuario/país, formatear en ABAP y entregar texto. -->
+<subform name="Formatos" layout="lr-tb" w="190mm">
+  <field name="FECHA" w="40mm" h="6mm" access="readOnly">
+    <ui><dateTimeEdit><border presence="hidden"/><margin/></dateTimeEdit></ui>
+    <font typeface="Arial" size="10pt"/>
+    <format><picture>date{DD/MM/YYYY}</picture></format>
+    <bind match="dataRef" ref="$.FECHA"><picture>date{YYYY-MM-DD}</picture></bind>
+  </field>
+  <field name="MONTO" w="40mm" h="6mm" access="readOnly">
+    <ui><numericEdit><border presence="hidden"/><margin/></numericEdit></ui>
+    <font typeface="Arial" size="10pt"/><para hAlign="right"/>
+    <format><picture>num{z,zzz,zzz,zz9.99}</picture></format>
+    <bind match="dataRef" ref="$.MONTO"/>
+  </field>
+</subform>

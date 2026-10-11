@@ -1,0 +1,221 @@
+{
+  "form": "ZXX_BASE_DOC_PDF",
+  "interface": "ZXX_BASE_DOC_IF",
+  "description": "Plantilla base ABIX: cabecera, QR, imagen dinamica, tabla multipagina, totales, resumen y bloque condicionado",
+  "params": [
+    {
+      "name": "TITULO",
+      "type": "STRING"
+    },
+    {
+      "name": "DOCUMENTO",
+      "type": "STRING"
+    },
+    {
+      "name": "FOTO",
+      "type": "XSTRING"
+    },
+    {
+      "name": "MOSTRAR_NOTA",
+      "type": "XFELD"
+    },
+    {
+      "name": "VUELOS",
+      "type": "FLIGHTTAB"
+    }
+  ],
+  "types": [
+    "TYPES: BEGIN OF ty_resumen,",
+    "         currency    TYPE s_currcode,",
+    "         vuelos      TYPE i,",
+    "         asientos    TYPE i,",
+    "         importe     TYPE s_price,",
+    "         importe_txt TYPE c LENGTH 25,",
+    "       END OF ty_resumen.",
+    "TYPES tt_resumen TYPE STANDARD TABLE OF ty_resumen WITH DEFAULT KEY."
+  ],
+  "globals": [
+    {
+      "name": "TOTAL_ASIENTOS",
+      "type": "INT4"
+    },
+    {
+      "name": "RESUMEN",
+      "type": "TT_RESUMEN"
+    },
+    {
+      "name": "FOTO_B64",
+      "type": "STRING"
+    }
+  ],
+  "initInputs": [
+    "VUELOS",
+    "FOTO"
+  ],
+  "initOutputs": [
+    "TOTAL_ASIENTOS",
+    "RESUMEN",
+    "FOTO_B64"
+  ],
+  "initCode": [
+    "DATA ls_vuelo TYPE sflight.",
+    "DATA ls_res   TYPE ty_resumen.",
+    "FIELD-SYMBOLS <ls_res> TYPE ty_resumen.",
+    "",
+    "* Imagen dinamica: el layout espera base64 (un XSTRING crudo NO se ve)",
+    "foto_b64 = cl_web_http_utility=>encode_x_base64( foto ).",
+    "",
+    "* Totales y resumen: se suman en formato INTERNO (misma moneda) y se formatean al final",
+    "CLEAR: total_asientos, resumen.",
+    "LOOP AT vuelos INTO ls_vuelo.",
+    "  total_asientos = total_asientos + ls_vuelo-seatsocc.",
+    "  CLEAR ls_res.",
+    "  ls_res-currency = ls_vuelo-currency.",
+    "  ls_res-vuelos   = 1.",
+    "  ls_res-asientos = ls_vuelo-seatsocc.",
+    "  ls_res-importe  = ls_vuelo-price.",
+    "  COLLECT ls_res INTO resumen.",
+    "ENDLOOP.",
+    "SORT resumen BY currency.",
+    "LOOP AT resumen ASSIGNING <ls_res>.",
+    "  WRITE <ls_res>-importe TO <ls_res>-importe_txt CURRENCY <ls_res>-currency.",
+    "  CONDENSE <ls_res>-importe_txt.",
+    "ENDLOOP."
+  ],
+  "currencyRefs": [
+    {
+      "value": "VUELOS-PRICE",
+      "unit": "VUELOS-CURRENCY"
+    }
+  ],
+  "context": [
+    {
+      "kind": "field",
+      "name": "TITULO"
+    },
+    {
+      "kind": "field",
+      "name": "DOCUMENTO"
+    },
+    {
+      "kind": "field",
+      "name": "FOTO_B64"
+    },
+    {
+      "kind": "field",
+      "name": "TOTAL_ASIENTOS"
+    },
+    {
+      "kind": "loop",
+      "name": "VUELOS",
+      "columns": [
+        "CARRID",
+        "CONNID",
+        "FLDATE",
+        "PLANETYPE",
+        "PRICE",
+        "CURRENCY",
+        "SEATSMAX",
+        "SEATSOCC"
+      ],
+      "inactiveColumns": [
+        "MANDT",
+        "PAYMENTSUM",
+        "SEATSMAX_B",
+        "SEATSOCC_B",
+        "SEATSMAX_F",
+        "SEATSOCC_F"
+      ]
+    },
+    {
+      "kind": "loop",
+      "name": "RESUMEN",
+      "columns": [
+        "CURRENCY",
+        "VUELOS",
+        "ASIENTOS",
+        "IMPORTE",
+        "IMPORTE_TXT"
+      ]
+    },
+    {
+      "kind": "folder",
+      "name": "NOTA",
+      "conditions": [
+        {
+          "operand1": "MOSTRAR_NOTA",
+          "operator": "EQ",
+          "operand2": "'X'"
+        }
+      ],
+      "children": [
+        {
+          "kind": "field",
+          "name": "AVISO",
+          "field": "DOCUMENTO"
+        }
+      ]
+    }
+  ],
+  "test": {
+    "abap": [
+      "DATA titulo TYPE string.",
+      "DATA documento TYPE string.",
+      "DATA foto TYPE xstring.",
+      "DATA mostrar_nota TYPE xfeld.",
+      "DATA vuelos TYPE flighttab.",
+      "",
+      "* Datos reales si DEV los tiene; si no, simulados (la prueba nunca queda vacia)",
+      "SELECT * FROM sflight INTO TABLE @vuelos UP TO 40 ROWS.",
+      "IF vuelos IS INITIAL.",
+      "  vuelos = VALUE #(",
+      "    ( carrid = 'AA' connid = '0100' fldate = '20261101' price = '150.00' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 154 )",
+      "    ( carrid = 'LH' connid = '0107' fldate = '20261102' price = '203.17' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 175 )",
+      "    ( carrid = 'AZ' connid = '0114' fldate = '20261103' price = '256.34' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 79 )",
+      "    ( carrid = 'UA' connid = '0121' fldate = '20261104' price = '309.51' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 277 )",
+      "    ( carrid = 'JL' connid = '0128' fldate = '20261105' price = '948.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 239 )",
+      "    ( carrid = 'QF' connid = '0135' fldate = '20261106' price = '415.85' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 216 )",
+      "    ( carrid = 'AA' connid = '0142' fldate = '20261107' price = '469.02' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 223 )",
+      "    ( carrid = 'LH' connid = '0149' fldate = '20261108' price = '522.19' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 234 )",
+      "    ( carrid = 'AZ' connid = '0156' fldate = '20261109' price = '575.36' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 101 )",
+      "    ( carrid = 'UA' connid = '0163' fldate = '20261110' price = '628.53' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 340 )",
+      "    ( carrid = 'JL' connid = '0170' fldate = '20261111' price = '1170.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 130 )",
+      "    ( carrid = 'QF' connid = '0177' fldate = '20261112' price = '734.87' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 302 )",
+      "    ( carrid = 'AA' connid = '0184' fldate = '20261113' price = '788.04' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 293 )",
+      "    ( carrid = 'LH' connid = '0191' fldate = '20261114' price = '841.21' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 294 )",
+      "    ( carrid = 'AZ' connid = '0198' fldate = '20261115' price = '894.38' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 50 )",
+      "    ( carrid = 'UA' connid = '0205' fldate = '20261116' price = '947.55' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 193 )",
+      "    ( carrid = 'JL' connid = '0212' fldate = '20261117' price = '892.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 177 )",
+      "    ( carrid = 'QF' connid = '0219' fldate = '20261118' price = '153.89' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 389 )",
+      "    ( carrid = 'AA' connid = '0226' fldate = '20261119' price = '207.06' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 362 )",
+      "    ( carrid = 'LH' connid = '0233' fldate = '20261120' price = '260.23' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 155 )",
+      "    ( carrid = 'AZ' connid = '0240' fldate = '20261121' price = '313.40' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 72 )",
+      "    ( carrid = 'UA' connid = '0247' fldate = '20261122' price = '366.57' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 256 )",
+      "    ( carrid = 'JL' connid = '0254' fldate = '20261123' price = '1114.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 224 )",
+      "    ( carrid = 'QF' connid = '0261' fldate = '20261124' price = '472.91' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 475 )",
+      "    ( carrid = 'AA' connid = '0268' fldate = '20261125' price = '526.08' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 200 )",
+      "    ( carrid = 'LH' connid = '0275' fldate = '20261126' price = '579.25' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 215 )",
+      "    ( carrid = 'AZ' connid = '0282' fldate = '20261127' price = '632.42' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 94 )",
+      "    ( carrid = 'UA' connid = '0289' fldate = '20261128' price = '685.59' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 319 )",
+      "    ( carrid = 'JL' connid = '0296' fldate = '20261101' price = '836.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 114 )",
+      "    ( carrid = 'QF' connid = '0303' fldate = '20261102' price = '791.93' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 274 )",
+      "    ( carrid = 'AA' connid = '0310' fldate = '20261203' price = '845.10' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 270 )",
+      "    ( carrid = 'LH' connid = '0317' fldate = '20261204' price = '898.27' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 274 )",
+      "    ( carrid = 'AZ' connid = '0324' fldate = '20261205' price = '951.44' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 115 )",
+      "    ( carrid = 'UA' connid = '0331' fldate = '20261206' price = '1004.61' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 172 )",
+      "    ( carrid = 'JL' connid = '0338' fldate = '20261207' price = '1058.00' currency = 'JPY' planetype = '767-300' seatsmax = 260 seatsocc = 161 )",
+      "    ( carrid = 'QF' connid = '0345' fldate = '20261208' price = '210.95' currency = 'AUD' planetype = 'A380-800' seatsmax = 480 seatsocc = 360 )",
+      "    ( carrid = 'AA' connid = '0352' fldate = '20261209' price = '264.12' currency = 'USD' planetype = '747-400' seatsmax = 385 seatsocc = 339 )",
+      "    ( carrid = 'LH' connid = '0359' fldate = '20261210' price = '317.29' currency = 'EUR' planetype = 'A340-600' seatsmax = 330 seatsocc = 135 )",
+      "    ( carrid = 'AZ' connid = '0366' fldate = '20261211' price = '370.46' currency = 'EUR' planetype = 'A319' seatsmax = 120 seatsocc = 65 )",
+      "    ( carrid = 'UA' connid = '0373' fldate = '20261212' price = '423.63' currency = 'USD' planetype = '777-200' seatsmax = 350 seatsocc = 235 )",
+      "  ).",
+      "ENDIF.",
+      "",
+      "* Imagen de prueba: un logo de SE78 o MIME; aqui se omite (el campo queda vacio)",
+      "titulo = `Documento de prueba - plantilla base ABIX`.",
+      "documento = `ABIX-DEMO3-2026-000123`.",
+      "mostrar_nota = abap_true."
+    ]
+  }
+}

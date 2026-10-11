@@ -1,0 +1,13 @@
+<!-- Marca de agua diagonal ("COPIA"/"BORRADOR") en la página maestra; visible solo si ES_COPIA = X.
+     Va dentro de la <pageArea>, ANTES de los demás objetos para quedar al fondo.
+     ⚠️ Es un FIELD sin binding, no un draw: en XFA los draw NO ejecutan scripts (verificado). -->
+<field name="MarcaAgua" x="25mm" y="120mm" w="160mm" h="40mm" rotate="45" access="readOnly" presence="invisible">
+  <ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+  <value><text>COPIA</text></value>
+  <font typeface="Arial" size="72pt" weight="bold"><fill><color value="225,225,225"/></fill></font>
+  <para hAlign="center" vAlign="middle"/>
+  <event activity="initialize">
+    <script contentType="application/x-javascript">var f = xfa.resolveNode("$record.ES_COPIA"); if (f != null &amp;&amp; f.value == "X") { this.presence = "visible"; }</script>
+  </event>
+  <bind match="none"/>
+</field>

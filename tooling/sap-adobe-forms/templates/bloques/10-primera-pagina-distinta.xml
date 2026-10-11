@@ -1,0 +1,16 @@
+<!-- Primera página con encabezado completo y siguientes con encabezado reducido.
+     Reemplaza el contenido de <pageSet>; el orden de las pageArea define la secuencia. -->
+<pageSet>
+  <pageArea name="Primera" id="Primera">
+    <occur min="1" max="1"/>
+    <contentArea x="10mm" y="60mm" w="190mm" h="218mm"/>
+    <medium stock="a4" short="210mm" long="297mm"/>
+    <!-- encabezado completo: logo, remitente, destinatario, datos del documento -->
+  </pageArea>
+  <pageArea name="Siguientes" id="Siguientes">
+    <occur min="0" max="-1"/>
+    <contentArea x="10mm" y="28mm" w="190mm" h="250mm"/>
+    <medium stock="a4" short="210mm" long="297mm"/>
+    <!-- encabezado reducido + "Página X de Y" -->
+  </pageArea>
+</pageSet>

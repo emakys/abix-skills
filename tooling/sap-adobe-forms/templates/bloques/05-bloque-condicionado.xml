@@ -1,0 +1,16 @@
+<!-- Bloque que solo se imprime si existe el nodo NOTA en los datos
+     (carpeta del contexto con condición, p. ej. MOSTRAR_NOTA EQ 'X'). ✅ verificado. -->
+<subform name="Nota" layout="tb" w="190mm">
+  <occur min="0" max="1"/><bind match="dataRef" ref="$.NOTA"/>
+  <subform name="CajaNota" layout="tb" w="190mm">
+    <border><edge thickness="0.3mm"><color value="217,150,30"/></edge>
+      <corner radius="2mm" thickness="0.3mm"><color value="217,150,30"/></corner>
+      <fill><color value="253,246,233"/></fill></border>
+    <draw name="T_NOTA" w="186mm" h="7mm"><ui><textEdit/></ui><value><text>Observación</text></value>
+      <font typeface="Arial" size="10pt" weight="bold"><fill><color value="150,95,10"/></fill></font><para vAlign="middle"/></draw>
+    <field name="AVISO" w="186mm" minH="6mm" access="readOnly">
+      <ui><textEdit multiLine="1"><border presence="hidden"/><margin/></textEdit></ui>
+      <font typeface="Arial" size="9pt"/><bind match="dataRef" ref="$.AVISO"/>
+    </field>
+  </subform>
+</subform>

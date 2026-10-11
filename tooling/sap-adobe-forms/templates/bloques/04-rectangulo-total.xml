@@ -1,0 +1,17 @@
+<!-- Total dentro de un rectángulo redondeado (rectangle al fondo, texto y campo encima). ✅ verificado. -->
+<subform name="Total" layout="position" w="190mm" h="12mm">
+  <draw name="MarcoTotal" x="100mm" y="1mm" w="90mm" h="10mm">
+    <value><rectangle>
+      <edge thickness="0.4mm"><color value="217,150,30"/></edge>
+      <corner radius="2mm" thickness="0.4mm"><color value="217,150,30"/></corner>
+      <fill><color value="253,246,233"/></fill>
+    </rectangle></value>
+  </draw>
+  <draw name="L_TOTAL" x="102mm" y="3mm" w="60mm" h="6mm"><ui><textEdit/></ui><value><text>Total:</text></value>
+    <font typeface="Arial" size="10pt" weight="bold"/><para vAlign="middle"/></draw>
+  <field name="TOTAL" x="160mm" y="3mm" w="28mm" h="6mm" access="readOnly">
+    <ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+    <font typeface="Arial" size="10pt" weight="bold"/><para hAlign="right" vAlign="middle"/>
+    <bind match="dataRef" ref="$.TOTAL"/>
+  </field>
+</subform>

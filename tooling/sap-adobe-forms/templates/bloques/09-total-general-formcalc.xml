@@ -1,0 +1,9 @@
+<!-- Total general calculado en el layout (FormCalc). Preferible calcularlo en ABAP; usar esto si el total
+     depende solo de lo impreso. La ruta incluye TODOS los subforms intermedios. -->
+<field name="TotalGeneral" w="50mm" h="6mm" access="readOnly">
+  <ui><numericEdit><border presence="hidden"/><margin/></numericEdit></ui>
+  <font typeface="Arial" size="10pt" weight="bold"/><para hAlign="right"/>
+  <format><picture>num{z,zzz,zzz,zz9.99}</picture></format>
+  <calculate><script contentType="application/x-formcalc">Sum(TablaPos.TablaPos_Fila[*].IMPORTE)</script></calculate>
+  <bind match="none"/>
+</field>

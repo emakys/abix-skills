@@ -1,0 +1,30 @@
+<!-- Recuadro redondeado de cabecera: datos a la izquierda, QR e imagen dinámica a la derecha.
+     Datos: TITULO, DOCUMENTO, FOTO_B64 (base64 generado en la inicialización). ✅ verificado. -->
+<subform name="Cabecera" layout="position" w="190mm" h="40mm">
+  <border>
+    <edge thickness="0.4mm"><color value="43,124,214"/></edge>
+    <corner radius="3mm" thickness="0.4mm"><color value="43,124,214"/></corner>
+    <fill><color value="247,250,254"/></fill>
+  </border>
+  <draw name="L_TIT" x="4mm" y="3mm" w="40mm" h="5mm"><ui><textEdit/></ui><value><text>Título</text></value>
+    <font typeface="Arial" size="8pt"><fill><color value="120,120,120"/></fill></font></draw>
+  <field name="TITULO" x="4mm" y="7.5mm" w="112mm" minH="7mm" maxH="12mm" access="readOnly">
+    <ui><textEdit multiLine="1"><border presence="hidden"/><margin/></textEdit></ui>
+    <font typeface="Arial" size="11pt" weight="bold"/><para vAlign="top"/>
+    <bind match="dataRef" ref="$.TITULO"/>
+  </field>
+  <draw name="L_DOC" x="4mm" y="19mm" w="40mm" h="5mm"><ui><textEdit/></ui><value><text>Documento</text></value>
+    <font typeface="Arial" size="8pt"><fill><color value="120,120,120"/></fill></font></draw>
+  <field name="DOCUMENTO" x="4mm" y="24mm" w="110mm" h="7mm" access="readOnly">
+    <ui><textEdit><border presence="hidden"/><margin/></textEdit></ui>
+    <font typeface="Arial" size="11pt"/><bind match="dataRef" ref="$.DOCUMENTO"/>
+  </field>
+  <field name="QR" x="120mm" y="4mm" w="32mm" h="32mm" access="readOnly">
+    <ui><barcode type="QRCode" moduleWidth="0.8mm" errorCorrectionLevel="1"/></ui>
+    <font typeface="Arial" size="6pt"/><bind match="dataRef" ref="$.DOCUMENTO"/>
+  </field>
+  <field name="FOTO" x="155mm" y="4mm" w="32mm" h="32mm" access="readOnly">
+    <ui><imageEdit/></ui><value><image aspect="fit" contentType="image/png"/></value>
+    <bind match="dataRef" ref="$.FOTO_B64"/>
+  </field>
+</subform>
