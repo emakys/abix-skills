@@ -47,9 +47,44 @@ Algoritmo:
 
 Reports estándar de ayuda ✅: `FDT_ANALYZE_DECISION_TABLE` (huecos/solapamientos), `FDT_SHOW_OBJ_USAGE_TREE`, `FDT_SHOW_OBJ_REFERENCE_TREE`, `FDT_DDIC_WHERE_USED`, `FDT_CODE_SEARCH`, `FDT_APPLICATION_OVERVIEW`, `FDT_CONTENT_OVERVIEW`.
 
-## Otras expresiones por SQL
+## Versión vigente ✅
 
-Cada tipo tiene sus tablas `FDT_EXPR_xxxx` (`0200`/`0210` árbol de búsqueda, `0220`/`0230`/`0231` árbol de decisión, `0001`/`0010`/`0020` …). Su formato no está documentado: para otras expresiones **prefiere el export XML** (sistemas donde puedas ejecutar una clase) o la vista del workbench.
+La versión a leer es `FDT_ADMN_0000(S).VERSION`, **salvo** que esa versión esté inactiva en `FDT_ADMN_0030(S)` (`STATE <> 'A'`, cambios sin activar): entonces, la última con `STATE = 'A'`. Tomar "la versión máxima" NO es seguro. Los objetos de un mismo app pueden tener versiones distintas (en una OPD real: tablas en v2, v3, v4 y v5).
+
+## Función, sets de reglas, reglas y objetos de datos ✅
+
+| Tabla | Contenido | Campos clave |
+|---|---|---|
+| `FDT_FNCT_0100` | Función | `EXPRESSION_ID` (expresión de nivel superior), `RESULT_DOBJ_ID`, `FUNCTION_MODE` (1 funcional, 2 evento, 3 ambos, 4 analítico) |
+| `FDT_FNCT_0110` | Contexto de la función | `DATA_OBJECT_ID` (una fila por objeto) |
+| `FDT_RLST_0000` | Set de reglas | `FUNCTION_ID` (a qué función apunta), `SWITCH` (X = encendido), `PRIORITY`, `CONDITION_ID` |
+| `FDT_RLST_1000` | Reglas del set, en orden | `POS`, `SWITCH`, `RULE_ID`, `CONDITION_ID`, `EXIT_RULESET`, `VALID_FROM`/`VALID_TO` |
+| `FDT_EXPR_3000` | Regla | `COND_RANGE_P` (condición por rango sobre ese objeto) o `BOOLE_CONDITION` (booleano); `TRUE_ACTION`/`FALSE_ACTION` |
+| `FDT_EXPR_3001` | Acciones de la regla | `TF_TYPE` (T = entonces, F = si no), `DOBJ_TARGET` + `EXPRESSION` (asignar resultado de expresión) / `VALUE` (asignar valor) / `DOBJ_SOURCE` (asignar objeto), `ACTION`, `RULE_ID` |
+| `FDT_EXPR_3002` | Rango de la condición | `SIGN`, `OPTIONS`, `VALUEL`, `VALUEH` |
+| `FDT_DOBJ_0000` | Tipo de objeto de datos | `DATA_OBJECT_TYPE` (E elemento, S estructura, T tabla) |
+| `FDT_DOBJ_0100` | Elemento | `ELEMENT_TYPE` (T/N/B/A/Q/P), `LENGTH` |
+| `FDT_DOBJ_0200` | Componentes de estructura | `SEQNR`, `ELEMENT_ID`/`STRUCTURE_ID`/`TABLE_ID` |
+| `FDT_DOBJ_0300` | Línea de una tabla | `STRUCTURE_ID` |
+| `FDT_DOBJ_0010` | Binding DDIC | `TYPENAME` |
+
+Los sets de reglas de una función pueden estar en el OTRO almacenamiento (busca por `FUNCTION_ID` en `FDT_RLST_0000` y `…0000S`).
+
+## Otras expresiones por SQL ✅
+
+Resultado de **cualquier** expresión: `FDT_EXPR_0010.DATA_OBJECT_ID`.
+
+| Expresión | Tablas | Cómo leerla |
+|---|---|---|
+| Constante | `FDT_EXPR_1000` | `VALUE` |
+| Case | `1200` + `1202` | `1200.CASE_PARAMETER` (objeto evaluado), `1200.VALUE` (valor "otro"); `1202` por `WHEN_POSITION`: `VALUET` → `VALUER` (o `TEST_PARAMETER`/`RETURN_PARAMETER` si son expresiones) |
+| Fórmula | `1401` | **Tokens** por `LINE`: `DO`/`EX` → ID del objeto/expresión en `FSYM`; `SP` → espacio; el resto, `FSYM` literal (operadores, paréntesis, funciones `FUnnnnnnnn`, strings `ST` ya entre comillas). Concatenar reconstruye el texto (p. ej. `MONTO * 1.19`) |
+| Rango de valores | `1101` + `1104` | `1101.TEST_PARAMETER` + rangos de `1104` |
+| Booleano | `1300` (+ `1302`/`1303`/`1304`) | `OPERATION` 1-6 = plantillas con operandos A/B/C (`IF_FDT_BOOLEAN=>GC_OPERATION_A_OR_B`=1, `A_AND_B`=2, `A_OR_B_OR_C`=3, `A_AND_B_OR_C`=4, `A_OR_B_AND_C`=5, `A_AND_B_AND_C`=6; operando = `FIRST/SECOND/THIRD_OPERAND` (expresión) o `…_RANGE_P` (objeto + rangos de `1304` con `TYPE` 1/2/3)); 7/8 = todos AND/OR (lista en `1303`); **9 = definido por el usuario: tokens en `1302`** (`TOKEN` AND/OR/NOT/paréntesis, u operando con rangos en `1304` `TYPE = 'U'` y `POS`) |
+
+Ejemplo real decodificado (OPD de movimientos de mercancías): un booleano sin nombre en la regla `RU_HANDLE_COLLECTIVE_SLIP` = `VERSIONFORPRINTINGSLIP EQ 3 AND MATERIALDOCUMENTITEM NE 0001` → en el vale colectivo solo imprime la primera posición.
+
+Siguen sin formato documentado: árboles (`0200`/`0210`, `0220`/`0230`/`0231`), llamada a procedimiento (`1500…`), búsqueda en BD (`2200…`), bucles, etc. Para esas, **export XML** o el workbench.
 
 ## Export / import XML ✅
 
@@ -66,6 +101,7 @@ lo_dx->import_xml( EXPORTING iv_string = lv_xml iv_simulate = abap_true iv_creat
 - El export trae **mensajes de validación** de BRF+ (celdas inválidas, tablas sin columnas de condición): úsalos como chequeo de calidad.
 - ⚠️ Cada export registra un ID `$X1P…` en el sistema (no es 100 % sin escritura).
 - ⚠️ El XML trae BOM y un salto de línea tras `<?xml …?>`: quítalos antes de embeberlo en un literal ABAP.
+- ⚠️ Una aplicación con estructuras ligadas al DDIC exporta grande: una app de prueba con `T001` dio **240 KB / 95 objetos** (81 son los componentes de la estructura).
 - Reports estándar: `FDT_XML_EXPORT`, `FDT_XML_IMPORT` ✅; FM `FDT_UPLOAD_XML` ✅.
 
 ### Formato de la tabla de decisión en el XML ✅

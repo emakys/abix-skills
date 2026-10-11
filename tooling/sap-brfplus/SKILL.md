@@ -47,6 +47,10 @@ BRF+ es una caja negra para el código ABAP (la decisión vive en tablas de deci
 
 En **sistema cerrado o productivo** solo lees (SQL). Nunca propongas cambiar reglas en productivo salvo que la aplicación lo permita por diseño (almacenamiento datos maestros o salida `GET_CHANGEABILITY`, `references/06`).
 
+## Flujo ABIX `/brf`
+
+`/brf leer` · `diagnosticar` · `comparar` · `excel` (solo lectura / sin SAP) → `crear` · `modificar` (escribes la definición `{app}.brf.json`) → **Simular ▶** (en memoria, sin grabar en BRF+) → **Desplegar ▶** (app nueva por API; existente por ida y vuelta XML, con respaldo). Formato de la definición, gates y trampas: `references/09-abix-comando-brf.md`. **No despliegues por tu cuenta**: el usuario usa los botones.
+
 ## Reglas duras (las que más fallan)
 
 1. **Reglas y sets de reglas nacen APAGADOS.** Sin `switch = gc_switch_on` en cada regla del set **y** `set_ruleset_switch( gc_switch_on )`, la función se ejecuta y devuelve **vacío sin error**. El `check` lo avisa ("Rule … is disabled"). ✅
@@ -61,6 +65,9 @@ En **sistema cerrado o productivo** solo lees (SQL). Nunca propongas cambiar reg
 10. **Lectura por SQL: decodifica las celdas empaquetadas** (`FDT_EXPR_0247`/`0248`) y usa la versión máxima; si no, faltan casi todas las filas. ✅
 11. **Contexto como lo ve BRF+:** obtén la referencia tipada con `cl_fdt_function_process=>get_data_object_reference` antes de llenarla; no adivines tipos. ✅
 12. **Rendimiento:** prefiere elementos *número* a importe/cantidad, evita expresiones que fuercen interpretación, ordena filas por frecuencia (`references/04`).
+13. **Versión vigente:** la de `FDT_ADMN_0000.VERSION` salvo que esté inactiva en `FDT_ADMN_0030` (`STATE <> 'A'`); "la máxima" no es segura. ✅
+14. **`save` sin orden:** en apps locales llama `save( )` sin parámetro; pasar la orden vacía da *"The transport request is initial"*. ✅
+15. **Fórmulas por API:** los operandos van por **ID** de objeto, no por nombre; al leerlas, `FDT_EXPR_1401` las guarda como tokens. ✅
 
 ## Referencias
 
@@ -72,4 +79,5 @@ En **sistema cerrado o productivo** solo lees (SQL). Nunca propongas cambiar reg
 - `references/06-transporte-exits-autorizaciones.md` — FDT0, órdenes, clientes, salidas de aplicación, objetos de autorización, herramientas
 - `references/07-brfplus-en-s4hana.md` — OPD (estructura real, diagnóstico), MDG, crédito, TM, GRC, RAR, reportes legales, EWM
 - `references/08-diagnostico-y-buenas-practicas.md` — checklist de diagnóstico, diseño, nomenclatura, anti-patrones
+- `references/09-abix-comando-brf.md` — el comando `/brf`: definición `.brf.json`, simular en memoria, desplegar (API / XML), comparar, Excel, trampas
 - `templates/` — clases classrun verificadas (crear modo funcional, crear modo evento, simular en memoria, ejecutar con contexto DDIC)
