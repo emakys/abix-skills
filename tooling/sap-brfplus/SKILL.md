@@ -61,8 +61,8 @@ En **sistema cerrado o productivo** solo lees (SQL). Nunca propongas cambiar reg
 6. **Columna de tabla de decisión = ID del componente**, no de la estructura. ✅
 7. **`save` hace COMMIT propio**: lo creado antes de un error queda grabado. Limpia explícitamente. ✅
 8. **Celdas comodín**: en `set_table_data`, una celda sin condición simplemente no se inserta. Valores de condición como `REF` al tipo BRF+ (`if_fdt_types=>element_text`, `element_number`, …). ✅
-9. **Orden de filas y de reglas importa**: la primera fila que coincide gana (salvo *multiple match*); la regla posterior pisa a la anterior. Pon la fila comodín al final. ✅
-10. **Lectura por SQL: decodifica las celdas empaquetadas** (`FDT_EXPR_0247`/`0248`) y usa la versión máxima; si no, faltan casi todas las filas. ✅
+9. **Orden de filas y de reglas importa**: la primera fila que coincide gana; la regla posterior pisa a la anterior. Pon la fila comodín al final. ✅ **Excepción — *multiple match*** (`FDT_EXPR_0240.MULTIPLE_MATCH = 'X'`): la tabla devuelve **TODAS** las filas que coinciden; ahí el orden no decide y no hace falta comodín. En OPD lo usan `DT_OUTPUT_TYPE`, `DT_RECEIVER`, `DT_CHANNEL` y `DT_EMAIL_RECEIVER` (varias salidas, receptores o canales a la vez). **Lee la propiedad antes de razonar sobre una tabla**; no la supongas. ✅
+10. **Lectura por SQL: decodifica las celdas empaquetadas** (`FDT_EXPR_0247`/`0248`) y usa la versión vigente (regla 13); si no, faltan casi todas las filas. ✅
 11. **Contexto como lo ve BRF+:** obtén la referencia tipada con `cl_fdt_function_process=>get_data_object_reference` antes de llenarla; no adivines tipos. ✅
 12. **Rendimiento:** prefiere elementos *número* a importe/cantidad, evita expresiones que fuercen interpretación, ordena filas por frecuencia (`references/04`).
 13. **Versión vigente:** la de `FDT_ADMN_0000.VERSION` salvo que esté inactiva en `FDT_ADMN_0030` (`STATE <> 'A'`); "la máxima" no es segura. ✅

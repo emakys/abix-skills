@@ -1,6 +1,6 @@
 {
-  "version": "1.7.1",
-  "updated": "2026-10-11",
+  "version": "1.7.2",
+  "updated": "2026-10-12",
   "repo": "abix-skills",
   "skills": [
     {
@@ -403,7 +403,7 @@
       "id": "sap-brfplus",
       "name": "sap-brfplus",
       "description": "BRF+ · BRFplus · Reglas de negocio · Tablas de decisión · Output Management OPD · API FDT · Lectura SQL · Simulación",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "category": "tooling",
       "tier": "essential",
       "plan": "personal+",

@@ -1,6 +1,6 @@
 {
   "name": "sap-brfplus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Experto en BRF+ / BRFplus (FDT): jerarquía aplicación-objetos de datos-función-set de reglas-reglas, modos de función, expresiones y acciones, binding DDIC, almacenamiento, versionado, transporte FDT0, salidas de aplicación, autorizaciones, simulación (incluida en memoria sin grabar) y trazas, rendimiento, API ABAP verificada, lectura de reglas por SQL en cualquier sistema, export/import XML, y su uso en S/4HANA (output management OPD, MDG, crédito, RAR, reportes legales, EWM, TM, GRC).",
   "author": {
     "name": "ABIX Studio",

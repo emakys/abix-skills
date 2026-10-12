@@ -29,7 +29,7 @@ Tablas (sufijo `A`/`S`/`T` = variantes por almacenamiento/textos; las del mandan
 
 | Tabla | Contenido | Campos clave |
 |---|---|---|
-| `FDT_EXPR_0240` | Atributos de la tabla | `ID`, `VERSION` |
+| `FDT_EXPR_0240` | Atributos de la tabla: **`MULTIPLE_MATCH`** (`X` = devuelve todas las filas que coinciden) y **`ALLOW_NO_MATCH`** (`X` = sin coincidencia no lanza excepción) | `ID`, `VERSION` |
 | `FDT_EXPR_0241` | **Columnas** | `ID`, `VERSION`, `COL_NO`, `ELEMENT_ID`, `IS_RESULT` |
 | `FDT_EXPR_0244` | **Celdas condición** | `ID`, `VERSION`, `COL_NO`, `ROW_NO`, `SEQNR`, `SIGN`, `OPTIONS`, `VALUEL`, `VALUEH` |
 | `FDT_EXPR_0242` | **Celdas resultado** | `ID`, `VERSION`, `COL_NO`, `ROW_NO`, `VALUE` |

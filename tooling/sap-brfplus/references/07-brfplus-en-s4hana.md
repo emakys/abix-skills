@@ -32,7 +32,7 @@ Reemplaza a la técnica de condiciones (NAST) para la mayoría de documentos en 
 1. `APOC_D_OR_ITEM` del documento: qué decidió SAP.
 2. Contexto real: vista de parámetros del objeto filtrada por el documento.
 3. Tablas `DT_*` reconstruidas por SQL (`05`).
-4. Evaluar fila por fila: en orden, primera coincidencia. Si no coincide ninguna → BRF+ lanza "No match found for the given context (DT_…)" y no hay salida de ese tipo.
+4. Evaluar fila por fila según la propiedad de la tabla (`FDT_EXPR_0240`): **primera coincidencia** en la mayoría, pero `DT_OUTPUT_TYPE`, `DT_RECEIVER`, `DT_CHANNEL` y `DT_EMAIL_RECEIVER` son ***multiple match*** → cuentan **todas** las filas que coinciden (por eso un documento puede generar varias salidas o varios receptores). En una tabla de primera coincidencia sin fila que coincida → BRF+ lanza "No match found for the given context (DT_…)" y no hay salida de ese tipo (ninguna tabla OPD revisada tiene `ALLOW_NO_MATCH`).
 
 Verificado en un QAS real: la predicción coincidió 100 % con lo registrado (entrada de mercancías y salida a subcontratista, incluida una posición sin salida porque no marcaba impresión).
 
