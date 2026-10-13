@@ -135,18 +135,65 @@ Revisar en este orden:
 - Nada de `SELECT` por fila dentro de una implementación llamada por posición: precargar en el método de cabecera, si el BAdI lo ofrece, o usar buffers.
 - Una implementación por responsabilidad: varias implementaciones pequeñas filtradas se mantienen mejor que una grande con `CASE` por sociedad o país.
 
-## Tablas del sistema útiles para auditar (SQL de solo lectura) — **(a confirmar)**
+## Auditar por SQL (solo lectura, con `GetSqlQuery`) ✅
 
-Antes de depender de estas tablas, verifica en el sistema que existen y cuáles son sus campos (`SELECT … UP TO 1 ROWS`):
+Tablas y campos verificados en S4D (S/4HANA 2023, 12-oct-2026). Sirven en cualquier sistema, productivo incluido, porque solo leen.
 
-| Tabla | Contenido esperado |
-|---|---|
-| `SXS_ATTR` | Definiciones de BAdIs clásicos |
-| `SXC_EXIT` | Implementación clásica → BAdI (`IMP_NAME`, `EXIT_NAME`) |
-| `SXC_ATTR` | Atributos de implementaciones clásicas (incluido si están activas) |
-| `BADIIMPL_ENH` | Implementación de BAdI nuevo → enhancement implementation y BAdI |
-| `ENHHEADER` | Cabecera de enhancement implementations (`ENHO`) |
-| `ENHOBJ` | Objetos ampliados por cada enhancement implementation |
-| `TADIR` (`OBJECT = 'ENHO'`, nombre Z/Y) | Inventario de ampliaciones del cliente por paquete |
+| Tabla | Campos clave | Contenido |
+|---|---|---|
+| `BADI_MAIN` | `BADI_NAME`, `INTERFACE_NAME`, `SINGLE_USE` (`X` = uso único), `DEFAULT_CLASS` | Definiciones de BAdIs nuevos |
+| `BADI_IMPL` | `BADI_NAME`, `ENHNAME`, `BADI_IMPL`, `CLASS_NAME`, `IS_DEFAULT` | Implementación → clase |
+| `BADIIMPL_ENH` | `ENHNAME`, `BADI_IMPL`, `BADI_NAME`, `SPOTNAME`, `ACTIVE` | Implementación de BAdI nuevo → `ENHO`, BAdI y spot, y si está activa |
+| `SXS_ATTR` | `EXIT_NAME`, `MLTP_USE`, `FLT_TYPE`, `INTERNAL`, `MIG_BADI_NAME`, `MIG_ENHSPOTNAME` | Definiciones de BAdIs clásicos (y a qué BAdI nuevo se migraron) |
+| `SXC_EXIT` | `IMP_NAME`, `EXIT_NAME`, `FLT_VAL` | Implementación clásica → BAdI |
+| `SXC_ATTR` | `IMP_NAME`, `ACTIVE`, `MIG_ENHNAME` | Atributos de implementaciones clásicas |
+| `ENHHEADER` | `ENHNAME`, `VERSION`, `ENHTOOLTYPE` (`BADI_IMPL` o `HOOK_IMPL`) | Cabecera de cada `ENHO`. `HOOK_IMPL` = ampliación de **código fuente** (implícita o explícita) |
+| `ENHOBJ` | `ENHNAME`, `OBJ_TYPE`, `OBJ_NAME`, `MAIN_TYPE`, `MAIN_NAME` | Objetos que amplía cada `ENHO` (programa, FUGR/FUNC, CLAS/METH) |
+| `ENHINCINX` | `ENHNAME`, `PROGRAMNAME`, `FULL_NAME`, `ENHINCLUDE` | Punto exacto donde se engancha cada ampliación de código |
+| `ENHSPOTHEADER` | `ENHSPOT`, `TOOL_TYPE`, `INTERNAL` | Cabecera de spots |
+| `I_APIsForCloudDevelopment` (CDS) | `RELEASEDOBJECTTYPE = 'BADI_DEF'`, `RELEASEDOBJECTNAME`, `OBJECTDIRECTORYNAME` (spot) | BAdIs liberados (Nivel A) |
 
-Uso típico en ABIX: inventariar las `ENHO` Z/Y de un paquete con `TADIR`, y para las que tocan código estándar abrir cada objeto con `GetEnhancements` para clasificar su nivel (implícita = D, explícita con código inline = D, implementación de BAdI = A/B).
+Filtra siempre `VERSION = 'A'` (activa) en las tablas que tienen versión.
+
+### Clasificar una ampliación de código: `ENHINCINX.FULL_NAME`
+
+El **último segmento antes de `\EI`** dice qué tipo de ampliación es:
+
+| Termina en | Tipo | Nivel | Ejemplo real |
+|---|---|---|---|
+| `\SE:BEGIN\EI` o `\SE:END\EI` | **Implícita** (inicio/fin de FM, método, form, include) | **D** | `\FU:BAL_FILTER_CREATE\SE:BEGIN\EI`, `\TY:CL_SWF_RUN_WIM_LOCAL\ME:GET_MAIN_OBJECT\SE:END\EI` |
+| `\EX:<punto>\EI` | **Explícita** (`ENHANCEMENT-POINT` de SAP) | B/D (D si tiene código inline, ver `SKILL.md`) | `\PR:SAPLMRMP\EX:MRM_INVOICE_POST_02\EI` |
+
+Ojo con los anidados: `\EX:…\EN:…\SE:END\EI` es una implícita al final de una ampliación de SAP. Manda el último segmento, así que es **implícita**.
+
+La barra invertida dentro de `LIKE` se toma literal (verificado: `LIKE '%\SE:END\EI'` devuelve lo mismo que `LIKE '%SE:END%'`), así que puedes filtrar por el segmento exacto.
+
+ℹ️ **Largo de línea:** el SQL libre de ADT no admite líneas de más de 255 caracteres (falla con un error de sintaxis engañoso, p. ej. `A Boolean expression was expected`). En ABIX, `GetSqlQuery` ya parte las líneas largas automáticamente. Fuera de ABIX, escribe las consultas largas en varias líneas. Un literal de texto de más de 255 caracteres no se puede partir: divide la condición.
+
+### Consultas probadas
+
+```sql
+-- Implícitas del cliente (Nivel D): qué ENHO y dónde se enganchan
+SELECT enhname, programname, full_name FROM enhincinx
+  WHERE ( enhname LIKE 'Z%' OR enhname LIKE 'Y%' ) AND version = 'A'
+    AND ( full_name LIKE '%SE:BEGIN%' OR full_name LIKE '%SE:END%' )
+
+-- Explícitas del cliente (revisar si tienen código inline → D)
+SELECT enhname, programname, full_name FROM enhincinx
+  WHERE ( enhname LIKE 'Z%' OR enhname LIKE 'Y%' ) AND version = 'A'
+    AND full_name LIKE '%EX:%'
+
+-- Implementaciones de BAdI del cliente, y cuáles están sobre BAdIs liberados (A) — el resto es B
+SELECT b~enhname, b~badi_name, b~spotname, b~active, a~releasestate
+  FROM badiimpl_enh AS b
+  LEFT OUTER JOIN i_apisforclouddevelopment AS a
+    ON a~releasedobjectname = b~badi_name AND a~releasedobjecttype = 'BADI_DEF'
+  WHERE b~enhname LIKE 'Z%' OR b~enhname LIKE 'Y%'
+
+-- ¿Un BAdI es de uso único o múltiple?
+SELECT badi_name, interface_name, single_use, default_class FROM badi_main WHERE badi_name = '...'
+```
+
+En S4D esto dio 187 `ENHO` Z implícitas, 4 explícitas y 57 implementaciones de BAdI (varias sobre BAdIs liberados). Es el inventario de Nivel D listo para el plan de remediación de `SKILL.md`.
+
+**Uso en ABIX:** con estas consultas sacas el inventario y la clasificación. Para leer el **código** de una ampliación concreta, usa `GetEnhancements` sobre el objeto estándar ampliado (`MAIN_NAME` de `ENHOBJ`) o `GetEnhancementImpl`.

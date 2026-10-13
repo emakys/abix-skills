@@ -7,7 +7,7 @@ description: Experto en BAdIs y framework de ampliaciones ABAP con criterio clea
 
 Eres especialista en **extender el estándar SAP sin modificarlo**. Tu trabajo no es solo escribir la implementación: es **elegir la técnica correcta, justificar su nivel clean core** y anticipar qué va a reportar ATC.
 
-> Origen: basada en `likweitan/abap-skills` (MIT), corregida y adaptada por ABIX Studio (oct-2026). Nada de esta skill se verificó todavía en vivo contra un sistema; lo marcado **(a confirmar)** no lo afirmes sin comprobarlo en el sistema.
+> Origen: basada en `likweitan/abap-skills` (MIT), corregida y adaptada por ABIX Studio (oct-2026). Lo marcado ✅ se verificó en vivo por SQL de solo lectura (S4D, S/4HANA 2023, 12-oct-2026). Lo marcado **(a confirmar)** no lo afirmes sin comprobarlo en el sistema.
 
 ## Regla cero: no inventes BAdIs
 
@@ -62,7 +62,7 @@ Estas reglas son las que más se equivocan al generar código. Respétalas siemp
 1. **Uso único vs. uso múltiple es una propiedad del BAdI**, configurable en el marco nuevo **y** en el clásico. No asumas ninguna.
 2. **Un BAdI de uso múltiple NO puede tener parámetros `EXPORTING` ni `RETURNING`** (cada implementación pisaría el resultado de la anterior). Solo `IMPORTING` y `CHANGING`. Si necesitas devolver algo, usa `CHANGING`.
 3. **`CX_BADI_NOT_IMPLEMENTED` la lanza `GET BADI`**, no el método. Ocurre solo en BAdIs de **uso único** sin implementación activa **ni** clase fallback. **No se declara** en el `RAISING` de los métodos de la interfaz.
-4. En un BAdI de **uso múltiple** sin implementaciones, `GET BADI` devuelve una referencia válida y `CALL BADI` **no hace nada**. Por eso `IF lo_badi IS BOUND` no sirve para detectar "sin implementación". Si necesitas saberlo, usa `cl_badi_query=>number_of_implementations( lo_badi )` (a confirmar en el release) o una clase fallback.
+4. En un BAdI de **uso múltiple** sin implementaciones, `GET BADI` devuelve una referencia válida y `CALL BADI` **no hace nada**. Por eso `IF lo_badi IS BOUND` no sirve para detectar "sin implementación". Si necesitas saberlo, usa `cl_badi_query=>number_of_implementations( lo_badi )` (la clase y el método existen ✅) o una clase fallback.
 5. **El orden de ejecución de varias implementaciones no está garantizado** (salvo que el BAdI tenga ordenación definida). No diseñes lógica que dependa de él.
 6. **Los filtros se evalúan en `GET BADI`**, no en `CALL BADI`. Si el valor del filtro cambia dentro de un `LOOP`, hay que repetir `GET BADI`; si no cambia, haz `GET BADI` **una vez fuera** del bucle.
 7. La interfaz del BAdI nuevo hereda de **`IF_BADI_INTERFACE`**. La clase de implementación implementa la interfaz del BAdI, no `IF_BADI_INTERFACE` directamente.
@@ -204,7 +204,17 @@ Así la lógica vive en tu paquete: se puede probar, filtrar y ver en un upgrade
 
 Para encontrar BAdIs en el código estándar: leer la fuente con las tools de lectura (`ReadClass`/`ReadProgram`/`GetInclude` en modo REPO, `Get*` en modo SAP) y buscar `GET BADI` / `CL_EXITHANDLER`. `SearchSource` (solo on-premise) busca texto en el código, si está disponible.
 
-Para saber si un BAdI está **liberado**: ADT (`api:badi` o *API State*) o el repositorio de cloudificación de SAP. Una consulta SQL a `I_APIStateOfRepositoryObject` es posible, pero el tipo de objeto con que aparecen los BAdIs (`BADI_DEF` como subobjeto del spot `ENHS`) está **(a confirmar)**: mira primero una fila de la vista antes de filtrar.
+Para saber si un BAdI está **liberado** (Nivel A), consulta la vista CDS `I_APIsForCloudDevelopment` con `GetSqlQuery` ✅. Los BAdIs aparecen como `RELEASEDOBJECTTYPE = 'BADI_DEF'`, con su spot en `OBJECTDIRECTORYNAME` (tipo `ENHS`). En S4D hay 993:
+
+```sql
+SELECT releasedobjectname, objectdirectoryname, releasestate
+  FROM i_apisforclouddevelopment
+  WHERE releasedobjecttype = 'BADI_DEF' AND releasedobjectname = 'MMPUR_WORKFLOW_AGENTS_V2'
+```
+
+Si no devuelve fila, el BAdI no está liberado: es Nivel B, o D si es interno. ⚠️ `I_APIStateOfRepositoryObject`, que aparece en algunas guías, **no existe** en S/4HANA 2023 on-premise. Alternativas sin SQL: ADT (`api:badi` o la pestaña *API State*) o el repositorio de cloudificación de SAP.
+
+Para el **inventario y la clasificación de las ampliaciones existentes** de un cliente (uso único/múltiple, implícitas vs. explícitas, BAdIs liberados ya implementados), las consultas probadas están en `references/badi-patterns.md` → *Auditar por SQL*.
 
 ### Lo que ABIX puede y no puede desplegar
 

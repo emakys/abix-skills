@@ -1,5 +1,5 @@
 {
-  "version": "1.7.3",
+  "version": "1.7.4",
   "updated": "2026-10-12",
   "repo": "abix-skills",
   "skills": [
@@ -546,7 +546,7 @@
       "id": "sap-badi-enhancement",
       "name": "sap-badi-enhancement",
       "description": "BAdIs y framework de ampliaciones ABAP con criterio clean core: nivel (A-D) de cada técnica de ampliación, checks ATC SYCM_ALLOWED_ENH_TECHNOLOGY y CI_SEARCH_CUST_MODIFICATIONS, reemplazo de modificaciones y ampliaciones implícitas por BAdIs, BAdIs nuevos y clásicos (uso único/múltiple, filtros, fallback, GET BADI, CL_EXITHANDLER), cómo encontrar el BAdI de un proceso y cómo auditar ampliaciones existentes por MCP. Úsala para extender el estándar SAP sin modificarlo o decidir qué técnica de ampliación está permitida.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "category": "tooling",
       "tier": "essential",
       "plan": "personal",
