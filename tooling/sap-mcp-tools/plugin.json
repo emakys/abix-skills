@@ -1,6 +1,6 @@
 {
   "name": "sap-mcp-tools",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Guia experta de las ~215 tools MCP de @mcp-abap-adt/core v8.13.0 para operar SAP S/4HANA via ADT. Workflows de deploy, profiling, unit testing, transports, syntax check, message class, function include, y troubleshooting.",
   "keywords": [
     "mcp",

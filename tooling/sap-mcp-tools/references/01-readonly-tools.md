@@ -11,8 +11,6 @@ Tools disponibles en modo REPO (`--exposition=readonly`). No modifican el sistem
 | `ReadClass` | CLAS | Lee source (definition, implementation, locals, macros, test) y metadata |
 | `ReadDataElement` | DTEL | Lee definicion y metadata de Data Element |
 | `ReadDomain` | DOMA | Lee definicion, fixed values y metadata |
-| `ReadEnhancementImplementation` | ENHO | Lee implementacion de enhancement (BAdI) |
-| `ReadEnhancementSpot` | ENHC | Lee enhancement spot definition |
 | `ReadFunctionGroup` | FUGR | Lee function group metadata |
 | `ReadFunctionModule` | FUNC | Lee source y metadata de Function Module |
 | `ReadInclude` | PROG | Lee source de un include |
@@ -81,6 +79,6 @@ Tools disponibles en modo REPO (`--exposition=readonly`). No modifican el sistem
 
 | Tool | Descripcion |
 |------|-------------|
-| `GetEnhancementSpots` | Lista enhancement spots de un objeto |
-| `ReadEnhancementImplementation` | Lee source de una implementacion |
-| `ReadEnhancementSpot` | Lee definicion del spot |
+| `GetEnhancements` | Implementaciones de ampliacion aplicadas sobre el codigo de un objeto (`object_name`, `object_type`: class/program/include) |
+| `GetEnhancementImpl` | Source de una implementacion (`enhancement_spot`, `enhancement_name`) |
+| `GetEnhancementSpot` | Metadatos del spot (`enhancement_spot`) |

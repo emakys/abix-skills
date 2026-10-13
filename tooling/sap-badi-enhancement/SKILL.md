@@ -1,431 +1,250 @@
 ---
 name: sap-badi-enhancement
-description: Help with BAdI (Business Add-In) development, the ABAP enhancement framework, and the clean core level classification of enhancement techniques. Covers new BAdIs, fallback classes, filter-based BAdIs, enhancement spots, enhancement implementations, key user extensibility, classic BAdIs, allowed vs. non-allowed enhancement technologies, and replacing modifications and implicit enhancements. Use when users ask about BAdI, BAdIs, Business Add-In, enhancement spot, enhancement implementation, enhancement framework, BAdI filter, BAdI fallback, BAdI definition, BAdI implementation, key user extensibility, custom logic injection, enhancement point, implicit enhancement, explicit enhancement, allowed enhancement technologies, user exit, customer exit, modification, or extending SAP standard code. Triggers include "create a BAdI", "implement a BAdI", "enhancement spot", "find a BAdI", "BAdI filter", "fallback class", "key user extensibility", "extend standard", "enhancement framework", "replace modification", "implicit enhancement", or "which level is this enhancement".
+description: Experto en BAdIs y framework de ampliaciones ABAP con criterio clean core — nivel (A-D) de cada técnica de ampliación (BAdI liberado/no liberado, key user, extension include, user/customer exit, append, ampliación explícita/implícita, plug-in, modificación), checks ATC SYCM_ALLOWED_ENH_TECHNOLOGY y CI_SEARCH_CUST_MODIFICATIONS, reemplazo de ampliaciones de Nivel D por BAdIs, BAdIs nuevos y clásicos (uso único/múltiple, filtros, clase fallback, GET BADI / CALL BADI, CL_EXITHANDLER), cómo encontrar el BAdI de un proceso y cómo auditar ampliaciones existentes leyendo el sistema por MCP.
 ---
 
-# BAdI & Enhancement Framework
+# BAdIs y framework de ampliaciones (ABIX)
 
-Guide for using BAdIs (Business Add-Ins) and the ABAP enhancement framework to extend SAP standard functionality, with clean core **level** classification for each technique.
+Eres especialista en **extender el estándar SAP sin modificarlo**. Tu trabajo no es solo escribir la implementación: es **elegir la técnica correcta, justificar su nivel clean core** y anticipar qué va a reportar ATC.
 
-> BAdIs are the **only** recommended enhancement technology under the clean core level concept. The ATC check `SYCM_ALLOWED_ENH_TECHNOLOGY` reports `ENHO` enhancements built on any other technology as a **priority 1 (Level D)** finding.
+> Origen: basada en `likweitan/abap-skills` (MIT), corregida y adaptada por ABIX Studio (oct-2026). Nada de esta skill se verificó todavía en vivo contra un sistema; lo marcado **(a confirmar)** no lo afirmes sin comprobarlo en el sistema.
 
-## Workflow
+## Regla cero: no inventes BAdIs
 
-1. **Determine the user's goal**:
-   - Finding an existing BAdI to implement
-   - Creating a custom BAdI definition
-   - Implementing a BAdI
-   - Replacing a modification or implicit enhancement with a BAdI
-   - Understanding classic vs. new enhancement framework
-   - Using key user extensibility
-   - Classifying an enhancement's clean core level
+Los nombres de BAdI son el terreno ideal para "rellenar" con algo plausible (`BADI_SD_SALES_xxx`, `IF_EX_...`). **Nunca nombres un BAdI, spot o interfaz que no hayas visto en el sistema o en la documentación.** Búscalo primero (ver *Encontrar el BAdI de un proceso*). Si no lo encuentras, dilo, y propone cómo encontrarlo.
 
-2. **Identify the framework**:
-   - New BAdI framework (preferred, ABAP Cloud compatible)
-   - Classic BAdI framework (legacy, `SE18`/`SE19`)
-   - Enhancement spots and implementations
-   - Key user extensibility (no-code)
+## Nivel clean core por técnica
 
-3. **Classify the clean core level** using the table below
+| Técnica | Nivel | Criterio |
+|---|---|---|
+| Key user extensibility (campos, lógica, CDS, BO custom) | **A** | Punto de partida para extensiones fuertemente acopladas |
+| BAdI **liberado** | **A** | Punto de extensión por código preferido |
+| Extension include **liberado** | **A** | Técnica preferida para campos custom en tablas y CDS |
+| Punto de extensión / BO RAP liberado | **A** | Para extender apps Fiori basadas en RAP |
+| `EXTEND VIEW ENTITY` / metadata extensions sobre CDS | **A/B** | A si la vista está liberada para extensión |
+| BAdI **no liberado** | **B** | Buena opción en ABAP clásico; vigilar si SAP lo libera |
+| User exits (VOFM, `MV45AFZZ` en `SAPMV45A`) | **B** | Estables entre upgrades; técnicamente son modificación |
+| Customer exits (SMOD/CMOD) | **B** | Predecesor de los BAdIs; solo si no hay BAdI |
+| Extension include no liberado, includes CI | **B** | Aceptable; migrar cuando exista uno liberado |
+| Appends de valores de dominio, appends/exits de ayuda de búsqueda | **B** | Técnicas clásicas aceptadas |
+| Redefinición de servicio OData | **B** | Redefinir, no modificar |
+| Append clásico sobre tabla de BD | **C** | Migrar cuando exista extension include |
+| Ampliación **explícita** (`ENHANCEMENT-POINT`/`-SECTION`) | **B/D** | Solo excepcional y **solo para llamar a un BAdI propio**; código inline = D |
+| Ampliación **implícita** (inicio/fin de método, form, FM, programa) | **D** | Equivale a una modificación — no usar |
+| Source code plug-in | **D** | Hallazgo ATC prioridad 1 — reemplazar por BAdI |
+| BAdI marcado como interno de SAP | **D** | Solo excepcional |
+| Modificación (con o sin asistente) | **D** | Evitar del todo |
 
-4. **Guide implementation** toward the highest applicable level
+**Regla general:** cero modificaciones a objetos SAP. Donde exista una, busca el BAdI (liberado, luego clásico) que la reemplace.
 
-## Clean Core Level by Enhancement Technique
+### Gobierno con ATC
 
-| Technique                             | Level | Guidance                                                                                              |
-| ------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------- |
-| **Key user extensibility**            | **A** | Start here for tightly coupled extensions — custom fields, custom logic, custom CDS views             |
-| **Released BAdI**                     | **A** | Preferred code-based extension point                                                                  |
-| **Released extension include**        | **A** | Preferred technique for custom fields on DB tables and CDS views                                      |
-| **Released extension point / RAP BO** | **A** | Use for extending RAP-based SAP Fiori apps                                                            |
-| **CDS extends / metadata extensions** | **A/B** | Extend SAP CDS views rather than modifying them                                                     |
-| **Non-released BAdI**                 | **B** | Good choice for classic extensions even when not released for cloud development. Monitor for release  |
-| **User exits** (VOFM, `SAPMV45A`)     | **B** | Predefined SAP coding parts are stable and typically survive upgrades. Technically a modification     |
-| **Customer exits** (SMOD/CMOD)        | **B** | Predecessor of BAdIs. Use only where no BAdI exists — likely to be replaced in future releases        |
-| **Non-released extension include**    | **B** | Acceptable; monitor when a released extension include becomes available                               |
-| **DDIC appends** (CI / EEW includes)  | **B** | Append fields via customer includes or extension includes                                             |
-| **Domain value appends, search help appends/exits** | **B** | Acceptable classic extension techniques                                               |
-| **OData service redefinition**        | **B** | Redefine rather than modify                                                                           |
-| **Classic append on DB table**        | **C** | Monitor when an extension include becomes available and adapt accordingly                             |
-| **Explicit enhancement spots**        | **B/D** | Exceptional cases only, to include a custom BAdI. **Do not** place extension code directly in the spot |
-| **Implicit enhancement spots**        | **D** | Similar to a modification — **do not use**                                                            |
-| **Source code plug-ins**              | **D** | ATC priority 1 finding — delete and use a BAdI                                                        |
-| **SAP-internal-flagged BAdI**         | **D** | Exceptional cases only                                                                                |
-| **Modifications**                     | **D** | Avoid completely. If unavoidable, use the modification assistant and govern via ATC                   |
+| Check | Nombre técnico | Qué reporta |
+|---|---|---|
+| Tecnologías de ampliación permitidas | `SYCM_ALLOWED_ENH_TECHNOLOGY` | Implementaciones `ENHO` hechas con una tecnología que no sea BAdI |
+| Modificaciones del cliente | `CI_SEARCH_CUST_MODIFICATIONS` | Objetos SAP modificados (un hallazgo por objeto) |
 
-**General rule**: no modifications to SAP objects. Where a modification exists, check whether a released or classic BAdI can replace it.
+Ambos dan hallazgos de **prioridad 1** (Nivel D). Si no están en el sistema, los entrega la **nota SAP 3565942** (a confirmar según release). Recomienda bloquear la liberación de órdenes con hallazgos de prioridad 1.
 
-### ATC governance
+### Cómo decidir (orden de preferencia)
 
-| ATC check                        | Technical name                 | Reports                                                                          |
-| -------------------------------- | ------------------------------ | -------------------------------------------------------------------------------- |
-| Allowed enhancement technologies | `SYCM_ALLOWED_ENH_TECHNOLOGY`  | `ENHO` enhancements on non-allowed technology — only BAdIs are recommended       |
-| Search customer modifications    | `CI_SEARCH_CUST_MODIFICATIONS` | Modified objects (one finding per object); checks ABAP Cloud object type support |
+1. ¿Lo resuelve **key user extensibility**? → A, sin código.
+2. ¿Hay un **BAdI liberado**? (ADT: búsqueda `api:badi`, o pestaña *API State* del spot) → A.
+3. ¿Hay un **BAdI clásico / no liberado**? → B.
+4. ¿Hay **user exit o customer exit**? → B, avisando que es tecnología vieja.
+5. Nada de lo anterior → **BAdI propio** llamado desde una **ampliación explícita** que solo contiene la llamada → B/D, documentado como excepción.
+6. Ampliación implícita o modificación → **D**: solo si el cliente acepta el riesgo por escrito, y siempre con el asistente de modificaciones.
 
-Both produce **priority 1 (error)** findings, corresponding to Level D. Implement **SAP Note 3565942** if these checks are unavailable.
+## Reglas de BAdI que no se pueden romper
 
-## BAdI Framework Overview
+Estas reglas son las que más se equivocan al generar código. Respétalas siempre:
 
-### New vs. Classic BAdIs
+1. **Uso único vs. uso múltiple es una propiedad del BAdI**, configurable en el marco nuevo **y** en el clásico. No asumas ninguna.
+2. **Un BAdI de uso múltiple NO puede tener parámetros `EXPORTING` ni `RETURNING`** (cada implementación pisaría el resultado de la anterior). Solo `IMPORTING` y `CHANGING`. Si necesitas devolver algo, usa `CHANGING`.
+3. **`CX_BADI_NOT_IMPLEMENTED` la lanza `GET BADI`**, no el método. Ocurre solo en BAdIs de **uso único** sin implementación activa **ni** clase fallback. **No se declara** en el `RAISING` de los métodos de la interfaz.
+4. En un BAdI de **uso múltiple** sin implementaciones, `GET BADI` devuelve una referencia válida y `CALL BADI` **no hace nada**. Por eso `IF lo_badi IS BOUND` no sirve para detectar "sin implementación". Si necesitas saberlo, usa `cl_badi_query=>number_of_implementations( lo_badi )` (a confirmar en el release) o una clase fallback.
+5. **El orden de ejecución de varias implementaciones no está garantizado** (salvo que el BAdI tenga ordenación definida). No diseñes lógica que dependa de él.
+6. **Los filtros se evalúan en `GET BADI`**, no en `CALL BADI`. Si el valor del filtro cambia dentro de un `LOOP`, hay que repetir `GET BADI`; si no cambia, haz `GET BADI` **una vez fuera** del bucle.
+7. La interfaz del BAdI nuevo hereda de **`IF_BADI_INTERFACE`**. La clase de implementación implementa la interfaz del BAdI, no `IF_BADI_INTERFACE` directamente.
+8. Parámetros de tipo genérico (`TYPE any`) no permiten acceso estático a componentes (`is_data-campo` no compila). Tipa con estructuras concretas.
 
-| Aspect               | New BAdI Framework              | Classic BAdI Framework |
-| -------------------- | ------------------------------- | ---------------------- |
-| **Transactions**     | ADT or `SE18`/`SE19`            | `SE18`/`SE19`          |
-| **Enhancement Spot** | Required container              | Not applicable         |
-| **Multiple Use**     | Always multiple-use             | Configurable           |
-| **Filter**           | Filter types supported          | Filter values          |
-| **Fallback Class**   | Supported                       | Not available          |
-| **ABAP Cloud**       | Supported (released BAdIs only) | Not available          |
-| **Clean core level** | A if released, else B           | B (or D if SAP-internal-flagged) |
-| **Recommendation**   | Use for all new development     | Maintain existing only |
+## Crear un BAdI propio (marco nuevo)
 
-## Creating a Custom BAdI
-
-### Step 1: Create Enhancement Spot
-
-```
-ADT: New → Other ABAP Repository Object → Enhancements → Enhancement Spot
-Name: Z_ENH_SPOT_TRAVEL
-```
-
-### Step 2: Define the BAdI Interface
+1. **Enhancement spot** (`ENHS`): ADT → New → Enhancements → Enhancement Spot, p. ej. `ZES_TRAVEL`.
+2. **Interfaz**:
 
 ```abap
-INTERFACE zif_badi_travel_validate
-  PUBLIC.
+INTERFACE zif_badi_travel_validate PUBLIC.
+  INTERFACES if_badi_interface.
   METHODS validate
-    IMPORTING
-      is_travel       TYPE zstravel
-    CHANGING
-      ct_messages     TYPE bapiret2_t
-    RAISING
-      cx_badi_not_implemented.
+    IMPORTING is_travel   TYPE ztravel
+    CHANGING  ct_messages TYPE bapiret2_t.
 ENDINTERFACE.
 ```
 
-### Step 3: Define the BAdI in Enhancement Spot
-
-In the enhancement spot, add a BAdI definition:
-
-| Property           | Value                                 |
-| ------------------ | ------------------------------------- |
-| **BAdI Name**      | `ZBADI_TRAVEL_VALIDATE`               |
-| **Interface**      | `ZIF_BADI_TRAVEL_VALIDATE`            |
-| **Multiple Use**   | Yes (allows multiple implementations) |
-| **Fallback Class** | `ZCL_BADI_TRAVEL_FALLBACK` (optional) |
-
-### Step 4: Create Fallback Class (Optional)
+3. **Definición del BAdI** en el spot: nombre `ZBADI_TRAVEL_VALIDATE`, interfaz `ZIF_BADI_TRAVEL_VALIDATE`, uso múltiple sí/no (con uso múltiple, la interfaz respeta la regla 2), filtro opcional (p. ej. `COUNTRY` tipo `LAND1`), clase fallback opcional.
+4. **Llamada** en tu código:
 
 ```abap
-CLASS zcl_badi_travel_fallback DEFINITION
-  PUBLIC FINAL CREATE PUBLIC.
-  PUBLIC SECTION.
-    INTERFACES zif_badi_travel_validate.
-ENDCLASS.
+DATA lo_badi TYPE REF TO zbadi_travel_validate.   " referencia al BAdI, NO a la interfaz
 
-CLASS zcl_badi_travel_fallback IMPLEMENTATION.
-  METHOD zif_badi_travel_validate~validate.
-    "Default behavior when no implementation is active
-  ENDMETHOD.
-ENDCLASS.
-```
-
-### Step 5: Call the BAdI in Your Code
-
-```abap
-"Get BAdI handle
-DATA lo_badi TYPE REF TO zif_badi_travel_validate.
-
-GET BADI lo_badi.
-
-"Call BAdI — loops through all active implementations
+GET BADI lo_badi FILTERS country = ls_travel-country.
 CALL BADI lo_badi->validate
   EXPORTING is_travel   = ls_travel
   CHANGING  ct_messages = lt_messages.
 ```
 
-### With Filters
+> Ojo: la variable se tipa `TYPE REF TO <nombre del BAdI>`, no a la interfaz. `GET BADI` no acepta una referencia a interfaz.
+
+Si el BAdI es de **uso único** sin fallback:
 
 ```abap
-"Define BAdI with filter
-"In Enhancement Spot: add filter type COUNTRY (type LAND1)
-
-"Get BAdI with filter
-GET BADI lo_badi
-  FILTERS country = ls_travel-country.
-
-CALL BADI lo_badi->validate
-  EXPORTING is_travel   = ls_travel
-  CHANGING  ct_messages = lt_messages.
+TRY.
+    GET BADI lo_badi.
+    CALL BADI lo_badi->validate EXPORTING is_travel = ls_travel CHANGING ct_messages = lt_messages.
+  CATCH cx_badi_not_implemented.
+    " sin implementación activa: comportamiento por defecto
+ENDTRY.
 ```
 
-## Implementing an Existing BAdI
+## Implementar un BAdI existente
 
-### Step 1: Find the BAdI
-
-Methods to find a BAdI:
-
-- **ADT search**: Search for BAdI name or enhancement spot
-- **Transaction `SE18`**: Browse BAdI definitions
-- **Breakpoint on `GET BADI`**: Set breakpoint at `CL_BADI_INTERNAL_FACTORY=>GET_BADI` to find BAdIs called during a process
-- **Documentation**: Check SAP documentation or community for BAdI names
-
-### Step 2: Create Enhancement Implementation
-
-```
-ADT: New → Other ABAP Repository Object → Enhancements → Enhancement Implementation
-Name: Z_ENH_IMPL_TRAVEL_CHECK
-Enhancement Spot: Z_ENH_SPOT_TRAVEL (or SAP's spot)
-```
-
-### Step 3: Create BAdI Implementation Class
+1. **Enhancement implementation** (`ENHO`) sobre el spot del BAdI (ADT → New → Enhancement Implementation, o SE19).
+2. **Implementación del BAdI** dentro de ella, con su clase y, si aplica, los valores de filtro.
+3. **Clase de implementación**:
 
 ```abap
-CLASS zcl_badi_impl_travel_check DEFINITION
-  PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_badi_travel_check DEFINITION PUBLIC FINAL CREATE PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_badi_travel_validate.
 ENDCLASS.
 
-CLASS zcl_badi_impl_travel_check IMPLEMENTATION.
+CLASS zcl_badi_travel_check IMPLEMENTATION.
   METHOD zif_badi_travel_validate~validate.
-    "Custom validation logic
     IF is_travel-begin_date < cl_abap_context_info=>get_system_date( ).
-      APPEND VALUE #(
-        type       = 'E'
-        id         = 'Z_TRAVEL'
-        number     = '001'
-        message_v1 = 'Travel begin date must be in the future'
-      ) TO ct_messages.
+      APPEND VALUE #( type = 'E' id = 'ZTRAVEL' number = '001' ) TO ct_messages.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.
 ```
 
-## BAdIs in ABAP Cloud / RAP
+Los textos van en una clase de mensajes (`id`/`number`), no en `message_v1` como texto fijo.
 
-In ABAP for Cloud Development, BAdIs follow a specific pattern:
+### BAdI clásico (SE18/SE19)
 
-### Released BAdIs — Level A
-
-- Only SAP-released BAdIs can be implemented in ABAP Cloud
-- Search for released BAdIs in ADT: `api:badi`
-- Common in RAP scenarios for extending standard RAP BOs
-- Verify release state programmatically:
+Se obtiene con `CL_EXITHANDLER`, no con `GET BADI`, y la interfaz es `IF_EX_<nombre>`:
 
 ```abap
-SELECT SINGLE *
-  FROM i_apistateofrepositoryobject
-  WHERE ObjectType   = 'SXSD'          "BAdI definition
-    AND ObjectName   = 'MY_BADI'
-    AND ReleaseState = 'RELEASED'
-  INTO @DATA(ls_state).
+DATA lo_exit TYPE REF TO if_ex_<badi_clasico>.
+CALL METHOD cl_exithandler=>get_instance
+  CHANGING instance = lo_exit.
+lo_exit->metodo( ... ).
 ```
 
-### RAP BAdI Pattern
+Para **implementar** un BAdI clásico se usa SE19 (crea la implementación y la clase `ZCL_IM_...`). En sistemas actuales, muchos BAdIs clásicos están migrados al marco nuevo y SE19 lo indica.
+
+## Encontrar el BAdI de un proceso
+
+En orden, de más barato a más caro:
+
+1. **Leer el código estándar por MCP** (lo que ABIX puede hacer solo, ver abajo): busca `GET BADI` y `CL_EXITHANDLER=>GET_INSTANCE` en el programa/clase/FM del proceso. El nombre del BAdI está en la declaración `TYPE REF TO` de la variable.
+2. **ADT:** búsqueda `api:badi` (solo liberados), o abrir el spot y revisar sus BAdIs.
+3. **Depurador:** breakpoint en la **sentencia** `GET BADI` (breakpoint por sentencia ABAP) y, para clásicos, en `CL_EXITHANDLER=>GET_INSTANCE`; ejecutar la transacción y anotar cada BAdI que pasa.
+4. **Documentación SAP** del área (guía de implementación SPRO → *Business Add-Ins*).
+
+## Key user extensibility (Nivel A)
+
+Apps Fiori: *Custom Fields*, *Custom Logic*, *Custom CDS Views*, *Custom Business Objects*, *Custom Analytical Queries*.
+
+- **Custom Logic** implementa BAdIs liberados para key user escribiendo **ABAP restringido** en el editor web de la app (no BRF+).
+- Si el requerimiento excede al key user, se pasa a **extensibilidad de desarrollador** (ABAP Cloud): sigue siendo Nivel A si solo usa APIs liberadas.
+
+## Ampliaciones explícitas, implícitas y modificaciones
+
+**Explícita — solo para llamar a un BAdI propio.** Nunca lógica de negocio inline:
 
 ```abap
-"BAdI for extending SAP Fiori apps / RAP BOs
-"Implement the released BAdI interface
-CLASS zcl_my_rap_badi DEFINITION
-  PUBLIC FINAL CREATE PUBLIC.
-  PUBLIC SECTION.
-    INTERFACES if_some_released_badi.
-ENDCLASS.
-
-CLASS zcl_my_rap_badi IMPLEMENTATION.
-  METHOD if_some_released_badi~some_method.
-    "Custom logic
-  ENDMETHOD.
-ENDCLASS.
-```
-
-### Dynamic BAdI Calls
-
-```abap
-"Dynamic GET BADI with BAdI name in variable
-DATA lo_badi TYPE REF TO cl_badi_base.
-DATA(lv_badi_name) = 'ZBADI_MY_BADI'.
-
-GET BADI lo_badi TYPE (lv_badi_name).
-
-"Dynamic CALL BADI with method name in variable
-CALL BADI lo_badi->('VALIDATE')
-  EXPORTING is_data = ls_data.
-```
-
-## Enhancement Spots and Implementations
-
-Beyond BAdIs, the enhancement framework supports the techniques below. **Note the clean core level of each** — most are Level D and must be avoided.
-
-### Explicit Enhancement Points — Level B/D
-
-SAP defines explicit points in standard code where custom logic can be inserted. These were mainly created to enable industry-specific adaptations.
-
-**Guidance**: use only in exceptional cases, and only to include a custom-defined BAdI into the SAP core. Do **not** place extension code directly in the enhancement spot.
-
-```abap
-"In SAP standard code:
-ENHANCEMENT-POINT z_enh_point SPOTS z_enh_spot.
-
-"In your enhancement implementation:
-ENHANCEMENT z_my_enhancement.
-  "Preferred: delegate to a custom BAdI rather than inlining logic
-  DATA lo_badi TYPE REF TO zif_badi_my_logic.
-  GET BADI lo_badi.
+ENHANCEMENT 1 zei_travel_hook.        "active version
+  DATA lo_badi TYPE REF TO zbadi_travel_process.
+  GET BADI lo_badi FILTERS country = ls_data-country.
   CALL BADI lo_badi->process CHANGING cs_data = ls_data.
 ENDENHANCEMENT.
 ```
 
-### Explicit Enhancement Sections — Level B/D
+Así la lógica vive en tu paquete: se puede probar, filtrar y ver en un upgrade.
 
-```abap
-"SAP code with replaceable section:
-ENHANCEMENT-SECTION z_section SPOTS z_enh_spot.
-  "Default code (can be replaced)
-  lv_result = lv_a + lv_b.
-END-ENHANCEMENT-SECTION.
+**`ENHANCEMENT-SECTION`** reemplaza el bloque estándar entero: si un upgrade o una nota cambia ese bloque, tu reemplazo puede seguir ejecutando la lógica vieja. Hay que revisarlo en SPAU_ENH tras cada upgrade. Es la forma más peligrosa de las explícitas.
 
-"Your replacement:
-ENHANCEMENT z_my_section_impl.
-  "Custom replacement code
-  lv_result = lv_a * lv_b.
-ENDENHANCEMENT.
-```
+**Implícitas** → Nivel D. Remediación: borrar la implementación y mover la lógica a un BAdI.
 
-### Implicit Enhancements — Level D, do not use
+**Modificaciones** → Nivel D. Si son inevitables: asistente de modificaciones (ajuste SPAU manejable), gobierno con `CI_SEARCH_CUST_MODIFICATIONS`, y deshacer las correcciones manuales de notas cuando la corrección ya viene en el estándar.
 
-Implicit enhancement points (at the start/end of methods, forms, programs) are technically equivalent to modifications. `SYCM_ALLOWED_ENH_TECHNOLOGY` reports them as **priority 1 (error)** findings.
+### Reemplazo de lo que es Nivel D
 
-**Remediation**: delete the enhancement implementation and use a released or classic BAdI instead.
+| Existente (D) | Reemplazo |
+|---|---|
+| Modificación | BAdI liberado → BAdI clásico → key user |
+| Ampliación implícita | BAdI liberado → BAdI clásico |
+| Explícita con código inline | Mover el código a un BAdI propio llamado desde la explícita |
+| Source code plug-in | BAdI liberado o clásico |
+| BAdI interno de SAP | Otro punto de extensión liberado o clásico |
+| Corrección manual de nota | Deshacerla cuando la corrección esté en el estándar |
 
-### Modifications — Level D, avoid completely
+**Flujo:** correr los dos checks ATC → por cada hallazgo de prioridad 1 buscar BAdI liberado → si no hay, clásico → si no, key user o BAdI propio en explícita → migrar la lógica y borrar la implementación D → volver a correr ATC.
 
-If a modification cannot be prevented:
-- Use the **modification assistant** so post-upgrade adjustment stays manageable
-- Govern via the `CI_SEARCH_CUST_MODIFICATIONS` ATC check
-- Reset modifications from SAP Notes once the correction is part of the core
+## En ABIX
 
-**Remediation**: check whether a released or classic BAdI can replace the modification.
+### Lo que puedes leer por MCP (solo lectura, disponible en cualquier modo)
 
-### User Exits and Customer Exits — Level B
+| Tool | Parámetros (reales) | Para qué |
+|---|---|---|
+| `GetEnhancements` | `object_name`, `object_type` (`class` \| `program` \| `include`) | Lista las **implementaciones de ampliación aplicadas sobre el código** de una clase, programa o include (incluidas implícitas), con su fuente. Para un FM, pasa el include del grupo (`L<grupo>U<nn>`). **Es la herramienta para auditar Nivel D** en el código estándar que toca el desarrollo |
+| `GetEnhancementSpot` | `enhancement_spot` | Metadatos de un spot (descripción, tipo, estado) |
+| `GetEnhancementImpl` | `enhancement_spot`, `enhancement_name` | Fuente de una implementación concreta |
 
-- **User exits** (VOFM, `SAPMV45A`): predefined SAP coding parts (form routines, includes) in an SAP namespace. Stable and typically survive upgrades, though technically treated as modifications. Monitor whether a released BAdI can replace them.
-- **Customer exits** (SMOD/CMOD): the predecessor technology to BAdIs. Usable in exceptional cases where no BAdI exists yet; most will be replaced in upcoming releases.
+Para encontrar BAdIs en el código estándar: leer la fuente con las tools de lectura (`ReadClass`/`ReadProgram`/`GetInclude` en modo REPO, `Get*` en modo SAP) y buscar `GET BADI` / `CL_EXITHANDLER`. `SearchSource` (solo on-premise) busca texto en el código, si está disponible.
 
-## Structural Extension Techniques
+Para saber si un BAdI está **liberado**: ADT (`api:badi` o *API State*) o el repositorio de cloudificación de SAP. Una consulta SQL a `I_APIStateOfRepositoryObject` es posible, pero el tipo de objeto con que aparecen los BAdIs (`BADI_DEF` como subobjeto del spot `ENHS`) está **(a confirmar)**: mira primero una fila de la vista antes de filtrar.
 
-Beyond business logic, these techniques extend SAP data structures and services:
+### Lo que ABIX puede y no puede desplegar
 
-### DDIC — Level A/B/C
+- **Sí:** la **interfaz** (`INTF`) y la **clase de implementación / fallback** (`CLAS`), con su par `.abap` + `.xml` en el workspace, como cualquier otro objeto.
+- **No:** el **enhancement spot** (`ENHS`), la **definición del BAdI**, la **enhancement implementation** (`ENHO`) ni sus valores de filtro. El MCP no tiene tools para crearlos. El usuario los crea en ADT o SE18/SE19 y ABIX despliega las clases. **Dilo explícitamente en el plan** y no generes archivos `.enho.*`/`.enhs.*` como si fueran a desplegarse.
+- Orden práctico: (1) el usuario crea spot y definición, o la implementación sobre el spot estándar; (2) ABIX despliega la interfaz o la clase; (3) el usuario asigna la clase a la implementación y la activa.
 
-- **Released extension includes** (EEW) → **Level A**, preferred
-- **Customer includes** (CI includes) on non-released structures/tables → **Level B**
-- **Classic appends** on DB tables → **Level C**; monitor for a released extension include
-- Domain value appends, search help appends, search help exits → **Level B**
+### En la especificación técnica (`/analisis`, fuente de verdad)
 
-### CDS — Level A/B
+Toda ampliación del estándar se declara con: **proceso → punto de extensión elegido (nombre real) → técnica → nivel clean core → por qué no se pudo uno mejor** (si no es A) → objetos Z que la implementan → hallazgo ATC esperado.
 
-- Use **CDS extends** rather than modifying SAP CDS views
-- Use **CDS metadata extensions** for UI annotation changes
-
-### OData — Level B
-
-- Use **redefinition** of OData services rather than modification
-
-## Key User Extensibility — Level A
-
-No-code/low-code extension capabilities available via SAP Fiori. This is the **starting point** for tightly coupled extensions.
-
-| Capability                    | Description                                 |
-| ----------------------------- | ------------------------------------------- |
-| **Custom Fields**             | Add fields to standard business objects     |
-| **Custom Logic**              | Add validation/determination logic via BRF+ |
-| **Custom CDS Views**          | Create simple analytical views              |
-| **Custom Business Objects**   | Create simple transactional objects         |
-| **Custom Analytical Queries** | Build queries on existing CDS views         |
-
-**Finding extension points**: use the extension registry (transaction `SEEA` / the extension point registry) to find every extension point registered in the system.
-
-When a requirement is too complex for key user extensibility, move to **developer extensibility** (ABAP Cloud) — still Level A.
-
-## Replacing Level D Enhancements
-
-| Existing Level D technique                  | Replacement                                                             |
-| ------------------------------------------- | ----------------------------------------------------------------------- |
-| Modification                                | Released BAdI → classic BAdI → key user extensibility                   |
-| Implicit enhancement                        | Released BAdI → classic BAdI                                            |
-| Explicit enhancement with inline code       | Move the code into a custom BAdI called from the enhancement            |
-| Source code plug-in                         | Released or classic BAdI                                                |
-| SAP-internal-flagged BAdI implementation    | Find an alternative released or classic extension point                 |
-| SAP Note manual correction                  | Reset the modification once the correction ships in the core            |
-
-**Remediation workflow:**
-1. Run `SYCM_ALLOWED_ENH_TECHNOLOGY` and `CI_SEARCH_CUST_MODIFICATIONS`
-2. For each priority 1 finding, search for a released BAdI (`api:badi` in ADT)
-3. If no released BAdI exists, search for a classic BAdI (Level B)
-4. If neither exists, consider key user extensibility or a custom BAdI in an explicit enhancement spot
-5. Delete the Level D implementation and migrate the logic
-6. Re-run ATC to confirm the finding is resolved
-
-## Best Practices
-
-1. **BAdIs are the only recommended enhancement technology** — everything else is Level B at best
-2. **Prefer released BAdIs (Level A)** over non-released BAdIs (Level B)
-3. **Prefer new BAdI framework** over classic BAdIs
-4. **Never use implicit enhancements or modifications** (Level D)
-5. **Start with key user extensibility (Level A)** for tightly coupled extensions
-6. **Use filters** to scope implementations to specific contexts
-7. **Implement fallback classes** for default behavior
-8. **Keep implementations focused** — one concern per implementation
-9. **Document the BAdI** with clear interface documentation
-10. **Test implementations** independently using ABAP Unit
-11. **In ABAP Cloud**, only implement released BAdIs
-12. **Govern with ATC** — block transport release on priority 1 and 2 findings
-
-## Output Format
-
-When helping with BAdI/enhancement topics, structure responses as:
+## Formato de respuesta
 
 ```markdown
-## BAdI / Enhancement Guidance
+## Ampliación propuesta
+- Proceso / punto: [transacción o clase estándar → BAdI/exit real]
+- Técnica: [BAdI liberado / clásico / key user / explícita→BAdI / …]
+- Nivel clean core: [A/B/C/D] — [por qué no uno mejor, si no es A]
+- Contexto: [ABAP Cloud / ABAP clásico]
 
-### Framework
+### Implementación
+[pasos; qué crea el usuario en ADT/SE19 y qué despliega ABIX]
 
-- Type: [New BAdI / Classic BAdI / Enhancement Spot / Key User]
-- Clean core level: [A / B / C / D]
-- Context: [ABAP Cloud / Classic ABAP]
+### Hallazgos ATC esperados
+[check, prioridad, o "ninguno"]
 
-### Implementation
-
-[Step-by-step with code examples]
-
-### Expected ATC Findings
-
-- [Check name, priority, and level, if any]
-
-### Testing
-
-[How to verify the enhancement works]
+### Prueba
+[cómo verificar que se ejecuta: breakpoint, caso de prueba, ABAP Unit]
 ```
 
-## References
+## Referencias
 
-- Clean Core Extensibility Whitepaper — clean core level concept
-- Extend SAP S/4HANA in the cloud and on premise with ABAP based extensions (Version 2.3, August 2025)
-- BAdI Cheat Sheet: https://github.com/SAP-samples/abap-cheat-sheets/blob/main/35_BAdIs.md
-- Enhancement Framework: https://help.sap.com/docs/abap-cloud/abap-development-tools-user-guide/enhancement
-- Key User Extensibility: https://help.sap.com/docs/sap-s4hana-cloud/extensibility
-- SAP Note 3565942 — delivers `SYCM_ALLOWED_ENH_TECHNOLOGY`
+- `references/badi-patterns.md` — filtros, fallback, casos de uso con tipos concretos, pruebas unitarias, migración clásico→nuevo, rendimiento y diagnóstico de "mi implementación no se ejecuta".
+- SAP: *Clean Core Extensibility* whitepaper; *Extend SAP S/4HANA with ABAP based extensions* (v2.3, ago-2025); BAdI cheat sheet `SAP-samples/abap-cheat-sheets` (`35_BAdIs.md`).
 
-## Detailed Reference
+## Skills relacionadas
 
-- **BAdI patterns**: Read `references/badi-patterns.md` for implementation patterns, filters, fallback classes, and testing
-
-## Related Skills
-
-- **sap-abap-cloud**: definiciones de nivel clean core y qué BAdIs están liberados
-- **sap-abap-cloud-migration**: reemplazar modificaciones y ampliaciones de Nivel D
-- **sap-atc-cloudification**: configurar la gobernanza de `SYCM_ALLOWED_ENH_TECHNOLOGY`
-- **sap-abap**: `references/rap-eml.md` (BAdIs RAP liberados) y `references/authorization.md`
-- **sap-clean-core**: verificar si un BAdI concreto está liberado para ABAP Cloud
+- **sap-abap-cloud**: definición de los niveles clean core y qué determina cada uno
+- **sap-abap-cloud-migration**: remediación de código custom existente por niveles
+- **sap-atc-cloudification**: configurar `SYCM_ALLOWED_ENH_TECHNOLOGY` y la gobernanza por nivel
+- **sap-clean-core**: verificar si un objeto concreto está liberado
+- **sap-abap**: `references/rap-eml.md` (BAdIs RAP liberados)
+- **sap-mcp-tools**: uso detallado de las tools MCP

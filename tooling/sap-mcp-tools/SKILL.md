@@ -117,8 +117,8 @@ GetAbapSemanticAnalysis(object_name="ZCL_EXAMPLE", object_type="CLAS")
 | `RuntimeAnalyzeProfilerTrace` | Analizar hotspots/tiempos |
 | `PublishServiceBinding` | Publicar servicio OData |
 | `UnpublishServiceBinding` | Despublicar servicio OData |
-| `GetEnhancementSpots` | Listar enhancement spots |
-| `ReadEnhancementImplementation` | Leer implementacion de BAdI |
+| `GetEnhancements` | Ampliaciones aplicadas sobre una clase/programa/include |
+| `GetEnhancementImpl` | Leer implementacion de ampliacion |
 | `GetPackageStructure` | Estructura de paquete |
 
 ## Errores Comunes y Soluciones
