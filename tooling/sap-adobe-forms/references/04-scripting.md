@@ -69,7 +69,7 @@ Verifica el `-1` en tu versión de ADS; usa `Number()` para no concatenar texto.
 
 **Copias Original / Copia**: Adobe no tiene "ventana de copias" como Smart Forms. En el programa, llamar al módulo N veces (o `COPIES` del spool) pasando un indicador/título distinto en cada vuelta; en el formulario, un campo con ese título o una marca de agua condicionada.
 
-**Marca de agua** ("BORRADOR", "COPIA"): `draw` grande, color claro, rotado (`rotate="45"`) en la `pageArea`, con `presence` según un indicador.
+**Marca de agua** ("BORRADOR", "COPIA", "REIMPRESIÓN"): **`field`** (no `draw`: los `draw` no ejecutan scripts) grande, color claro, rotado (`rotate="45"`), `access="readOnly"`, `bind match="none"`, primero dentro de la `pageArea`, con `presence="invisible"` y un script de `initialize` que lo hace visible según un indicador de la interfaz. Bloque verificado ✅: `templates/bloques/07-marca-de-agua.xml`.
 
 **Mostrar solo en vista previa**: `xfa.config.present.destination == "pdf"` es verdadero al previsualizar; útil para distinguir preview vs impresión.
 

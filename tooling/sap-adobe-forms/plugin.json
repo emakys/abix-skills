@@ -1,6 +1,6 @@
 {
   "name": "sap-adobe-forms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Experto en SAP Interactive Forms by Adobe (SFP): interfaz SFPI, contexto, layout XFA, scripting FormCalc/JavaScript, programa de impresión (FP_JOB_OPEN/SFPOUTPUTPARAMS), salida a PDF/impresora/correo/archivo, output management S/4HANA (BRF+/OPD, fragmentos, formularios maestros), textos SO10, direcciones, SE78, traducción SE63, códigos de barras/QR, ZPL/PCL/PostScript, formularios interactivos (ZCI), ADS (diagnóstico y rendimiento) y el flujo /adobeform de ABIX. Incluye plantilla base y biblioteca de bloques verificadas con ADS.",
   "author": {
     "name": "ABIX Studio",

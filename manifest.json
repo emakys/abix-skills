@@ -1,5 +1,5 @@
 {
-  "version": "1.7.4",
+  "version": "1.7.5",
   "updated": "2026-10-12",
   "repo": "abix-skills",
   "skills": [
@@ -392,7 +392,7 @@
       "id": "sap-adobe-forms",
       "name": "sap-adobe-forms",
       "description": "Adobe Forms · SFP · XFA/LiveCycle · Programa de impresión · Output Management · ADS · /adobeform",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "tooling",
       "tier": "essential",
       "plan": "personal+",
